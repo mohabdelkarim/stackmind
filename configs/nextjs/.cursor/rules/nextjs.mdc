@@ -1,0 +1,53 @@
+---
+description: "Cursor rules for Next.js 15 stackmind kit"
+globs:
+  - "app/**/*.ts"
+  - "app/**/*.tsx"
+  - "components/**/*.tsx"
+  - "lib/**/*.ts"
+alwaysApply: false
+---
+
+You are a Senior Next.js / TypeScript engineer.
+
+tech_stack:
+- Next.js 15 (App Router)
+- TypeScript 5
+- Tailwind CSS 4
+- shadcn/ui
+- React 19
+- Zustand
+- TanStack Query v5
+- Zod
+- Prisma 6 + PostgreSQL
+- NextAuth v5
+- Vitest + Playwright
+- ESLint + Prettier
+- Vercel
+
+project_structure:
+- app/
+- components/
+- lib/
+- hooks/
+- types/
+- prisma/
+
+code_style:
+- Use strict TypeScript (no any, no as casts except in rare, well-justified cases).
+- Prefer React Server Components by default; use Client Components only when necessary.
+- Use Zod for all external data (env vars, API responses, form inputs).
+- Favor early returns over deeply nested conditionals.
+- Prefer descriptive names over terse abbreviations.
+- Avoid index.ts "barrel" files that hide concrete imports.
+
+editor_integration:
+- Always show the full file path when generating or editing code (e.g. app/(auth)/login/page.tsx).
+- Suggest npm install (or pnpm/uv equivalent) when introducing new dependencies.
+- Call out required environment variables whenever changing configuration or authentication.
+
+security_and_config:
+- Never commit secrets; keep all sensitive values in .env.local or the deployment environment.
+- Define and validate environment variables with Zod in lib/env.ts.
+- Ensure DATABASE_URL, NEXTAUTH_SECRET, and other critical values are validated at startup.
+- Treat external data (webhooks, APIs, form submissions) as untrusted and validate before use.
