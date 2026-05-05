@@ -1,54 +1,89 @@
-# **stackmind**
+# stackmind
 
-Copy-paste AI coding configs for Cursor, Claude Code & all AI agents — organized by stack, auto-updated daily.
+> Copy-paste AI coding configs for Cursor, Claude Code & all AI agents — organized by stack, auto-updated daily.
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![Node](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg)
-![Maintained with Cerebras AI](https://img.shields.io/badge/maintained%20with-Cerebras%20AI-orange.svg)
+<p align="left">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+  <img src="https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg" alt="Node >=22" />
+  <img src="https://img.shields.io/badge/maintained%20with-Cerebras%20AI-orange.svg" alt="Maintained with Cerebras AI" />
+</p>
 
-## What's Inside
+stackmind is a curated library of **ready-to-paste config kits** for modern AI coding tools.
+Instead of rebuilding `.cursorrules`, `CLAUDE.md`, `AGENTS.md`, and MCP configs on every project, you drop in a stack-specific kit and start shipping.
+A daily Cerebras-powered workflow keeps your MCP versions fresh without sacrificing control.
 
-| Path            | Stack                                        |
-| --------------- | -------------------------------------------- |
-| `configs/nextjs` | Next.js 15 (App Router) + TypeScript 5       |
-| `configs/python` | Python 3.12 + FastAPI 0.115 + async SQLAlchemy |
+---
 
-## Quick Start
+## 🧩 What's inside
 
-1. Clone this repository:
+| Path             | Stack                                            | Use it when you… |
+| ---------------- | ------------------------------------------------ | ---------------- |
+| `configs/nextjs` | Next.js 15 (App Router) · TypeScript 5 · RSC UI  | Build React apps on Vercel with NextAuth, Prisma, Tailwind, shadcn/ui. |
+| `configs/python` | Python 3.12 · FastAPI 0.115 · async SQLAlchemy   | Ship async APIs with PostgreSQL, Alembic, Pydantic v2, and modern tooling. |
+
+Each kit includes:
+- Editor rules for Cursor and Claude Code.
+- Agent behavior profiles (AGENTS.md).
+- MCP configs + docs for Postgres, GitHub, filesystem, Brave Search, and memory.
+- A setup guide you can follow in a few minutes.
+
+---
+
+## ⚡ Quick start
+
+1. **Clone this repository**
    ```bash
    git clone https://github.com/mohabdelkarim/stackmind.git
    cd stackmind
    ```
-2. Change into the config folder that matches your stack (for example Next.js or Python/FastAPI):
+2. **Pick your stack** (Next.js or Python/FastAPI) and open its folder:
    ```bash
-   cd configs/nextjs   # or configs/python
+   cd configs/nextjs   # or: cd configs/python
    ```
-3. Copy the configuration files into your project, keeping the same structure (AGENTS.md, .claude/CLAUDE.md, .cursorrules, MCP configs, SETUP-GUIDE.md).
-4. Fill your project's `.env` / `.env.local` with real values based on the provided `.env.example` and stack-specific guides.
+3. **Copy the kit into your app**
+   - Copy `AGENTS.md` to your project root.
+   - Copy `.claude/CLAUDE.md` and `.cursorrules` to your project.
+   - Copy the `mcp/` folder and `SETUP-GUIDE.md` for that stack.
+4. **Wire up environment variables**
+   - Use `.env.example` as a reference.
+   - Fill in real values (DATABASE_URL, secrets, URLs) in your local `.env` / `.env.local`.
 
-## How the Auto-Updater Works
+In 2–3 minutes your AI tools should understand your stack, project layout, and conventions.
 
-- A daily cron job runs at **07:00 UTC** to check for new MCP server versions.
-- The workflow uses **Cerebras llama-3.3-70b** to update version pins in MCP configs in a controlled, JSON-valid way.
-- When changes are detected and validated, it commits back to `main` with a message like: `chore(auto): update MCP package versions YYYY-MM-DD`.
+---
 
-## Requirements
+## 🤖 How the auto‑updater works
 
-### To use configs
+- A scheduled GitHub Actions workflow runs every day at **07:00 UTC** and inspects `meta/versions.json`.
+- Using the **Cerebras `llama-3.3-70b` model**, it proposes version updates for MCP server packages and applies them to config files.
+- A validation script checks all JSON output; if everything passes, it commits back to `main` with:
+  ```text
+  chore(auto): update MCP package versions YYYY-MM-DD
+  ```
+- If validation fails, the workflow opens a GitHub issue so humans can review before any changes ship.
+
+---
+
+## ✅ Requirements
+
+### To use the configs
 
 - Any editor or environment that supports **Cursor**, **Claude Code**, or similar AI coding agents.
 - A project that roughly matches one of the existing stack templates (Next.js 15, Python/FastAPI, etc.).
 
-### To run automation
+### To run the automation
 
-- **Node.js >= 22.0.0** installed for running the scripts locally or in CI.
-- A **CEREBRAS_API_KEY** configured as a GitHub repository secret so the workflow can call the Cerebras API.
+- **Node.js >= 22.0.0** for running the Node scripts and GitHub Actions locally or in CI.
+- A **CEREBRAS_API_KEY** stored as a GitHub repository secret so the workflow can call the Cerebras API.
 
-## Contributing
+---
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to add new stacks or improve existing kits.
+## 🤝 Contributing
 
-## License
+Want to add a new stack kit or refine an existing one? Check out **[CONTRIBUTING.md](./CONTRIBUTING.md)** for structure, quality bar, and PR checklist.
 
-This project is licensed under the **MIT License**. See [LICENSE](./LICENSE) for details.
+---
+
+## 📜 License
+
+Released under the **MIT License**. See [LICENSE](./LICENSE) for full details.
