@@ -1,0 +1,18 @@
+{
+  "name": "[REPO_NAME]",
+  "version": "1.0.0",
+  "description": "Copy-paste AI coding tool configs for Cursor, Claude Code, and all AI agents",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.0.0" },
+  "scripts": {
+    "check": "node .github/scripts/check-versions.js",
+    "update": "node .github/scripts/ai-updater.js",
+    "validate": "node .github/scripts/validator.js",
+    "changelog": "node .github/scripts/changelog-generator.js"
+  },
+  "dependencies": {
+    "@cerebras/cerebras_cloud_sdk": "^1.21.0",
+    "node-fetch": "^3.3.2"
+  }
+}
