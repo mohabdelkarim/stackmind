@@ -16,6 +16,10 @@ const client = new Cerebras({
   apiKey: process.env.CEREBRAS_API_KEY,
 });
 
+// Use a supported, general-purpose production model from Cerebras
+// See: https://inference-docs.cerebras.ai/models/overview
+const MODEL_ID = 'gpt-oss-120b';
+
 function resolvePath(relativePath) {
   return path.resolve(repoRoot, relativePath);
 }
@@ -53,7 +57,7 @@ async function updateFile(filePath, changes) {
   let response;
   try {
     response = await client.chat.completions.create({
-      model: 'llama-3.3-70b',
+      model: MODEL_ID,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
