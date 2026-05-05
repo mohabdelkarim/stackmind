@@ -7,6 +7,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '../..');
 
+if (!process.env.CEREBRAS_API_KEY) {
+  console.error('[ai-updater] CEREBRAS_API_KEY is not set');
+  process.exit(1);
+}
+
 const client = new Cerebras({
   apiKey: process.env.CEREBRAS_API_KEY,
 });
@@ -27,36 +32,38 @@ function getSnippetFiles(relativeDir) {
 async function updateFile(filePath, changes) {
   const original = fs.readFileSync(filePath, 'utf8');
 
-  const systemPrompt = [
-    'You are an expert AI coding assistant that updates dependency version strings in JSON configuration files for MCP servers.',
-    'Only change versions when the package name appears in the provided "changes" map.',
-    'Always return valid JSON with the same overall structure.',
-  ].join(' ');
+  const systemPrompt = 'You are an expert in AI developer tools configuration.';
 
   const userPrompt = [
-    'You are given a JSON configuration file used in an AI tooling repository.',
+    'Update this config file to reflect these version changes.',
     '',
-    'Changes (mapping of package name to {current, latest}):',
+    'Changes (JSON map of package name to {current, latest}):',
     JSON.stringify(changes, null, 2),
     '',
     'Current file content:',
     original,
     '',
-    'Task:',
-    '- Update any version pins or package identifiers in this file so that they use the "latest" versions from the Changes map when applicable.',
+    'Instructions:',
+    '- Update any version pins or package identifiers so they use the "latest" values where applicable.',
     '- Do not introduce new packages or remove existing ones.',
-    '- Preserve keys and general ordering as much as possible.',
-    '- Output ONLY the full updated file content as raw JSON (no markdown, no code fences, no commentary).',
+    '- Preserve the overall structure and keys of the JSON.',
+    '- Return ONLY the updated JSON, with no explanation and no markdown fences.',
   ].join('\n');
 
-  const response = await client.chat.completions.create({
-    model: 'llama-3.3-70b',
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
-    ],
-    temperature: 0,
-  });
+  let response;
+  try {
+    response = await client.chat.completions.create({
+      model: 'llama-3.3-70b',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: 0,
+    });
+  } catch (err) {
+    console.error(`[ai-updater] Cerebras call failed for ${filePath}`, err?.message || err);
+    return;
+  }
 
   const message = response?.choices?.[0]?.message?.content;
   if (!message || typeof message !== 'string') {
@@ -80,6 +87,42 @@ async function updateFile(filePath, changes) {
 
   fs.writeFileSync(filePath, `${updated}\n`, 'utf8');
   console.log(`[ai-updater] Updated ${filePath}.`);
+}
+
+function applyChangesToMeta(changes) {
+  const metaPath = resolvePath('meta/versions.json');
+  if (!fs.existsSync(metaPath)) {
+    console.warn('[ai-updater] meta/versions.json not found, skipping meta update.');
+    return;
+  }
+
+  let meta;
+  try {
+    meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+  } catch (err) {
+    console.error('[ai-updater] Failed to parse meta/versions.json', err?.message || err);
+    return;
+  }
+
+  if (!meta.packages || typeof meta.packages !== 'object') {
+    meta.packages = {};
+  }
+
+  for (const [name, info] of Object.entries(changes)) {
+    if (!info || typeof info !== 'object') continue;
+    if (!('latest' in info)) continue;
+    meta.packages[name] = info.latest;
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  meta.last_check = today;
+
+  try {
+    fs.writeFileSync(metaPath, `${JSON.stringify(meta, null, 2)}\n`, 'utf8');
+    console.log('[ai-updater] Updated meta/versions.json with latest versions and date.');
+  } catch (err) {
+    console.error('[ai-updater] Failed to write meta/versions.json', err?.message || err);
+  }
 }
 
 async function main() {
@@ -116,6 +159,8 @@ async function main() {
       console.error(`[ai-updater] Error updating ${filePath}`, err);
     }
   }
+
+  applyChangesToMeta(changes);
 }
 
 main().catch((err) => {
