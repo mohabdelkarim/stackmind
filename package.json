@@ -1,5 +1,5 @@
 {
-  "name": "[REPO_NAME]",
+  "name": "stackmind",
   "version": "1.0.0",
   "description": "Copy-paste AI coding tool configs for Cursor, Claude Code, and all AI agents",
   "private": true,
