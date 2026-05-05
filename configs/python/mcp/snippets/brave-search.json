@@ -1,0 +1,13 @@
+{
+  "name": "brave-search",
+  "description": "Brave Search MCP server for web lookup and research.",
+  "config": {
+    "command": "npx",
+    "args": [
+      "@modelcontextprotocol/server-brave-search@0.6.2"
+    ],
+    "env": {
+      "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+    }
+  }
+}

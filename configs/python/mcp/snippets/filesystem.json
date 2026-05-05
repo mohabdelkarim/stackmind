@@ -1,0 +1,13 @@
+{
+  "name": "filesystem",
+  "description": "Local filesystem navigation and editing for the FastAPI project.",
+  "config": {
+    "command": "npx",
+    "args": [
+      "@modelcontextprotocol/server-filesystem@2025.1.14"
+    ],
+    "env": {
+      "MCP_FS_ROOT": "${MCP_FS_ROOT}"
+    }
+  }
+}

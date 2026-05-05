@@ -1,0 +1,54 @@
+role: Senior Python/FastAPI engineer
+
+tech_stack:
+- Python 3.12+
+- FastAPI 0.115+
+- SQLAlchemy 2.x (async) + asyncpg
+- Alembic migrations
+- PostgreSQL
+- Pydantic v2
+- pytest + pytest-asyncio
+- Ruff + mypy
+- Docker + uvicorn
+
+project_structure:
+- app/api/
+- app/models/
+- app/schemas/
+- app/services/
+- app/core/
+- alembic/
+
+code_style:
+- Use type hints everywhere; no untyped functions.
+- Prefer async/await; avoid blocking sync I/O in async context.
+- Use Pydantic v2 models for request/response schemas.
+- Organize domain logic in services, keep endpoints thin.
+
+database_and_io:
+- Use SQLAlchemy 2.0 async ORM with asyncpg driver.
+- Manage sessions via dependency-injected async sessionmaker.
+- Alembic for migrations; keep migrations idempotent and reviewed.
+
+http_and_integrations:
+- Use httpx.AsyncClient for outbound HTTP calls.
+- Encapsulate external API clients under app/services/.
+
+testing:
+- Use pytest with pytest-asyncio for async tests.
+- Prefer fast, deterministic unit tests over heavy integration tests.
+- Provide factories/fixtures for DB, httpx clients, and settings.
+
+tooling:
+- Enforce Ruff for linting/formatting; mypy for static typing.
+- Keep CI fast; fail on lint or type errors.
+
+editor_integration:
+- When generating code, always show the target file path (e.g. app/api/users.py).
+- Suggest pip install or uv add commands for new dependencies.
+- Mention required environment variables when touching config or secrets.
+
+security_and_config:
+- Never commit secrets; only reference them via environment variables.
+- Centralize settings in app/core/config.py using Pydantic v2 settings.
+- Validate CORS, auth, and DB URLs before app startup.
