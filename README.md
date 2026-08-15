@@ -1,95 +1,142 @@
-# stackmind
+<p align="center">
+  <img src="docs/assets/stackmind_readme_hero.png" alt="stackmind" width="920" />
+</p>
 
-Free, MIT licensed AI coding configs for Cursor, Claude Code, Copilot, Gemini, and other agents.
+<p align="center">
+  <strong>stackmind</strong><br/>
+  <em>Give your coding agent a memory of the stack, not another blank chat.</em>
+</p>
 
-Install stack aware `AGENTS.md`, Claude manuals, Cursor rules, and pinned MCP servers in about two minutes. No paid tiers.
+<p align="center">
+  <a href="https://github.com/mohabdelkarim/stackmind/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a2e24?style=flat-square&labelColor=0e1411" alt="MIT" /></a>
+  <a href="https://github.com/mohabdelkarim/stackmind/releases"><img src="https://img.shields.io/badge/version-1.3.0-6dffb0?style=flat-square&labelColor=0e1411" alt="version" /></a>
+  <a href="#two-commands"><img src="https://img.shields.io/badge/setup-~2_min-e8f0ea?style=flat-square&labelColor=0e1411" alt="setup" /></a>
+  <a href="#stacks"><img src="https://img.shields.io/badge/stacks-4_free-9bb0a2?style=flat-square&labelColor=0e1411" alt="stacks" /></a>
+</p>
 
-## Who it is for
+---
 
-Developers who start new projects often and do not want to re teach the agent the stack, conventions, and tool wiring every time.
+### The pitch
 
-## What you get
+You open Cursor or Claude Code on a new repo.  
+The agent does not know your folder layout, your conventions, or which MCP servers you trust.
 
-| Stack | Command |
-|-------|---------|
-| Next.js 15 | `init nextjs` |
-| Python FastAPI | `init python` |
-| NestJS | `init nestjs` |
-| Vue / Nuxt 3 | `init vue_nuxt` |
+**stackmind** drops in a ready kit for your stack: `AGENTS.md`, Claude manual, Cursor rules, pinned MCP config.  
+One command. Free. MIT. No upsell.
 
-Each install writes:
+```text
+  you ──init──▶ kit files ──▶ agent that already knows the house rules
+```
 
-- `AGENTS.md` (canonical rules for all agents)
-- `.claude/CLAUDE.md` (commands, key files, env vars)
-- `.cursor/rules/*.mdc` (Cursor glob scoped overlays)
-- `.cursor/mcp.json` (merged MCP servers) and `stackmind.mcp.json`
+---
 
-## Two minute setup
+<a id="two-commands"></a>
+### Two commands
 
 ```bash
+# pick a stack
 npx github:mohabdelkarim/stackmind init nextjs
 # or: python | nestjs | vue_nuxt
+
+# sanity check
+npx github:mohabdelkarim/stackmind doctor .
 ```
+
+Restart Cursor / Claude Code. Ask: *“What conventions does this project use?”*  
+It should answer from the kit, not invent a new architecture.
+
+<details>
+<summary><strong>Clone + local CLI</strong></summary>
 
 ```bash
 git clone https://github.com/mohabdelkarim/stackmind.git
 cd stackmind
 npm ci
-node bin/stackmind.js doctor
+node bin/stackmind.js list
 node bin/stackmind.js init nextjs ~/your_project
-npm run validate
 npm run demo_proof
 ```
 
-Restart Cursor or Claude Code after install.
+</details>
 
-## Live sample apps (battle tested)
+---
 
-| Sample | What it proves |
-|--------|----------------|
-| [examples/nextjs_live](examples/nextjs_live) | Real App Router app + Zod `lib/env.ts` + health API + kit |
-| [examples/python_live](examples/python_live) | Real FastAPI app + pytest health test + kit |
-| [examples/nestjs_live](examples/nestjs_live) | Nest feature module shape + kit smoke |
-| [examples/vue_nuxt_live](examples/vue_nuxt_live) | Nuxt pages/server API shape + kit smoke |
+<a id="stacks"></a>
+### Stacks
 
-## Proof and demo
+| Kit | Install | Vibe |
+|-----|---------|------|
+| **Next.js 15** | `init nextjs` | App Router, RSC default, Zod env, Prisma when needed |
+| **Python FastAPI** | `init python` | Thin routers, `app/services`, async, Pydantic v2 |
+| **NestJS** | `init nestjs` | Feature modules, DI, thin controllers |
+| **Vue / Nuxt 3** | `init vue_nuxt` | `pages/` + `server/api`, Composition API |
 
-- Walkthrough: [docs/DEMO.md](docs/DEMO.md)
-- Visual demo page (open locally or screen record): [docs/demo.html](docs/demo.html)
-- Latest automated proof log: [docs/PROOF_LOG.md](docs/PROOF_LOG.md)
+What lands in your repo:
+
+| File | Job |
+|------|-----|
+| `AGENTS.md` | Canonical rules for every agent |
+| `.claude/CLAUDE.md` | Short Claude Code manual |
+| `.cursor/rules/*.mdc` | Glob scoped Cursor overlays |
+| `.cursor/mcp.json` | Merged, version pinned MCP servers |
+
+---
+
+### Proof, not vibes
+
+Live sample apps ship in the repo and get smoke tested:
+
+| Live app | Proof |
+|----------|--------|
+| [`examples/nextjs_live`](examples/nextjs_live) | `npm run build` |
+| [`examples/python_live`](examples/python_live) | `pytest` |
+| [`examples/nestjs_live`](examples/nestjs_live) | structure smoke |
+| [`examples/vue_nuxt_live`](examples/vue_nuxt_live) | structure smoke |
 
 ```bash
 npm run demo_proof
 npm run live_smoke
 ```
 
-## CLI
+Visual walkthrough: [`docs/demo.html`](docs/demo.html) · full notes: [`docs/DEMO.md`](docs/DEMO.md) · log: [`docs/PROOF_LOG.md`](docs/PROOF_LOG.md)
+
+---
+
+### Fresh MCP pins (weekdays)
+
+A boring, deterministic GitHub Action (Mon–Fri, 07:00 UTC) checks npm for newer MCP package versions, rewrites pins in `configs/*/mcp/`, validates JSON, and commits as **MOHAbdelkarim**. No weekend runs. No LLM rewriting your configs.
+
+```bash
+npm run check
+npm run update
+npm run validate
+```
+
+---
+
+### CLI map
 
 ```bash
 stackmind list
-stackmind doctor [targetDir]
-stackmind init <stack> [targetDir] [--force] [--dry-run] [--no-mcp] [--mcp-only]
+stackmind doctor [dir]
+stackmind init <stack> [dir] [--force] [--dry-run] [--no-mcp] [--mcp-only]
 ```
 
-## MCP
+---
 
-Pinned servers under each kit's `mcp/`. Versions in [meta/versions.json](meta/versions.json). Deterministic weekday updater (Mon-Fri). You supply API keys. Never commit secrets.
+### Not this
 
-## Automation
+- Not a paid Gumroad pack  
+- Not a full app generator  
+- Not a replacement for your product brief  
+- Legacy `.cursorrules` is not installed (use `AGENTS.md` + `.mdc`)
 
-Weekdays at 07:00 UTC (no weekend runs): check npm pins, update MCP JSON, validate, commit as `MOHAbdelkarim <mohaabdelkarim2@gmail.com>`.
+---
 
-## Non goals
+### Contribute
 
-- Not a paid product
-- Not a replacement for your product requirements
-- Kits configure agents; live samples under `examples/*_live` show real usage
-- Legacy `.cursorrules` is not installed
+New stacks stay **free and public**. See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`docs/ADDING_A_STACK.md`](docs/ADDING_A_STACK.md).
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADDING_A_STACK.md](docs/ADDING_A_STACK.md).
-
-## License
-
-MIT © MOHAbdelkarim
+<p align="center">
+  <sub>MIT © MOHAbdelkarim · agent configs by stack</sub>
+</p>
