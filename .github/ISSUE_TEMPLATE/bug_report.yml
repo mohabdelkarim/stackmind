@@ -1,0 +1,26 @@
+name: Bug report
+description: Report a problem with the CLI or a kit
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened
+      description: Clear description of the problem
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Commands and stack used
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: stackmind version
+      placeholder: "1.1.1"
+    validations:
+      required: false
