@@ -1,0 +1,13 @@
+{
+  "name": "filesystem",
+  "description": "Local filesystem navigation and editing for the Next.js project.",
+  "config": {
+    "command": "npx",
+    "args": [
+      "@modelcontextprotocol/server-filesystem@2026.7.10"
+    ],
+    "env": {
+      "MCP_FS_ROOT": "${MCP_FS_ROOT}"
+    }
+  }
+}

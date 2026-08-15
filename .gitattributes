@@ -1,0 +1,6 @@
+# Classify the CLI and automation as JavaScript for GitHub Linguist.
+bin/** linguist-detectable
+.github/scripts/** linguist-detectable
+*.md linguist-documentation
+configs/** linguist-documentation
+examples/** linguist-documentation

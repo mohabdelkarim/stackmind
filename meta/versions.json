@@ -1,0 +1,17 @@
+{
+  "last_check": "2026-08-15",
+  "packages": {
+    "@modelcontextprotocol/server-postgres": "0.6.2",
+    "@modelcontextprotocol/server-github": "2025.4.8",
+    "@modelcontextprotocol/server-filesystem": "2026.7.10",
+    "@modelcontextprotocol/server-brave-search": "0.6.2",
+    "@notionhq/notion-mcp-server": "2.5.1",
+    "@modelcontextprotocol/server-memory": "2026.7.4"
+  },
+  "tools": {
+    "nextjs": "15.3.1",
+    "cursor": "1.0.0",
+    "claude_code": "1.3.0",
+    "fastapi": "0.115.12"
+  }
+}

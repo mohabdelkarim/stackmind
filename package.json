@@ -1,0 +1,47 @@
+{
+  "name": "stackmind",
+  "version": "1.1.1",
+  "description": "Install AI coding configs for Cursor, Claude Code, and other agents by stack",
+  "type": "module",
+  "bin": {
+    "stackmind": "./bin/stackmind.js"
+  },
+  "files": [
+    "bin",
+    "configs",
+    "meta",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "stackmind": "node bin/stackmind.js",
+    "check": "node .github/scripts/check_versions.js",
+    "update": "node .github/scripts/update_versions.js",
+    "validate": "node .github/scripts/validator.js",
+    "changelog": "node .github/scripts/changelog_generator.js",
+    "examples": "node bin/stackmind.js init nextjs ./examples/nextjs_applied --force && node bin/stackmind.js init python ./examples/python_applied --force"
+  },
+  "keywords": [
+    "cursor",
+    "claude-code",
+    "agents.md",
+    "mcp",
+    "nextjs",
+    "fastapi",
+    "ai-coding"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohabdelkarim/stackmind.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mohabdelkarim/stackmind/issues"
+  },
+  "homepage": "https://github.com/mohabdelkarim/stackmind#readme",
+  "license": "MIT",
+  "author": "MOHAbdelkarim"
+}

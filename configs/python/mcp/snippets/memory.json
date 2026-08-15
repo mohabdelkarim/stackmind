@@ -1,0 +1,10 @@
+{
+  "name": "memory",
+  "description": "Persistent memory across agent sessions.",
+  "config": {
+    "command": "npx",
+    "args": [
+      "@modelcontextprotocol/server-memory@2026.7.4"
+    ]
+  }
+}

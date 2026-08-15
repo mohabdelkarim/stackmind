@@ -1,0 +1,19 @@
+---
+description: "Cursor overlay for Next.js App Router files. Canonical rules live in AGENTS.md."
+globs:
+  - "app/**/*.ts"
+  - "app/**/*.tsx"
+  - "components/**/*.tsx"
+  - "lib/**/*.ts"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md` for this stack.
+
+When editing matching files:
+
+- Default to React Server Components; add `"use client"` only when needed.
+- Validate external input with Zod before use.
+- Keep route handlers and pages thin; put logic in `lib/` or server actions.
+- Never invent secrets; read from validated env (`lib/env.ts`).
+- Prefer Prisma typed queries over raw SQL unless there is a clear reason.

@@ -1,0 +1,13 @@
+{
+  "name": "notion",
+  "description": "Notion workspace access for product docs and specs.",
+  "config": {
+    "command": "npx",
+    "args": [
+      "@notionhq/notion-mcp-server@2.5.1"
+    ],
+    "env": {
+      "NOTION_TOKEN": "${NOTION_TOKEN}"
+    }
+  }
+}

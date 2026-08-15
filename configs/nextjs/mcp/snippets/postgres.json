@@ -1,0 +1,13 @@
+{
+  "name": "postgres",
+  "description": "PostgreSQL access for Prisma-backed Next.js apps.",
+  "config": {
+    "command": "npx",
+    "args": [
+      "@modelcontextprotocol/server-postgres@0.6.2"
+    ],
+    "env": {
+      "POSTGRES_DSN": "${DATABASE_URL}"
+    }
+  }
+}
