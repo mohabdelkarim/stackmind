@@ -2,7 +2,8 @@ name: MCP Config Auto Updater
 
 on:
   schedule:
-    - cron: '0 7 * * *'
+    # Weekdays only (Mon-Fri). No weekend runs.
+    - cron: '0 7 * * 1-5'
   workflow_dispatch:
 
 jobs:

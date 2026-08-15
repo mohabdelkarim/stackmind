@@ -73,11 +73,11 @@ stackmind init <stack> [targetDir] [--force] [--dry-run] [--no-mcp] [--mcp-only]
 
 ## MCP
 
-Pinned servers under each kit's `mcp/`. Versions in [meta/versions.json](meta/versions.json). Deterministic daily updater. You supply API keys. Never commit secrets.
+Pinned servers under each kit's `mcp/`. Versions in [meta/versions.json](meta/versions.json). Deterministic weekday updater (Mon-Fri). You supply API keys. Never commit secrets.
 
 ## Automation
 
-Daily at 07:00 UTC: check npm pins, update MCP JSON, validate, commit as `MOHAbdelkarim <mohaabdelkarim2@gmail.com>`.
+Weekdays at 07:00 UTC (no weekend runs): check npm pins, update MCP JSON, validate, commit as `MOHAbdelkarim <mohaabdelkarim2@gmail.com>`.
 
 ## Non goals
 
