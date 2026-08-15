@@ -16,3 +16,4 @@ When editing matching files:
 - Validate request/response bodies with Pydantic v2 models.
 - Add or update Alembic migrations when models change.
 - Prefer typed functions everywhere under `app/`.
+- Show the full file path before proposing code.

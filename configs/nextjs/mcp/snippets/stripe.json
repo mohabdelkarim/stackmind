@@ -1,0 +1,13 @@
+{
+  "name": "stripe",
+  "description": "Optional Stripe MCP for payments and subscriptions. Add to mcp config only when needed.",
+  "config": {
+    "command": "npx",
+    "args": [
+      "@stripe/mcp@0.3.3"
+    ],
+    "env": {
+      "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+    }
+  }
+}

@@ -2,7 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.1] - 2026-08-15
+## [1.2.0] - 2026-08-15
+
+### Added
+- `stackmind doctor` health checks
+- Per kit `kit.json` discovery for the CLI
+- Optional Stripe and Supabase MCP snippets (Next.js)
+- `docs/DEMO.md`, `docs/LAUNCH.md`, `docs/ADDING_A_STACK.md`
+- `npm run demo_proof` automated install proof
+
+### Changed
+- README rewritten as a calm free MIT product page
+- Slimmer `CLAUDE.md` files for Next.js and FastAPI
+- CONTRIBUTING updated for free only growth and kit.json
+
 
 ### Changed
 - Renamed `SETUP_GUIDE.md` and `mcp_config.json` (no hyphen filenames)

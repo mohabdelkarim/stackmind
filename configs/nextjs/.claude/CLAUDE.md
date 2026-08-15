@@ -1,40 +1,27 @@
-# Claude Code Manual: Next.js 15
+# CLAUDE.md — Next.js 15
 
 ## Project
-Next.js 15 App Router with TypeScript 5, Tailwind CSS 4, and shadcn/ui.
-React 19 with Zustand and TanStack Query v5 for client-side state and data.
-Prisma 6 + PostgreSQL, NextAuth v5, Vitest, Playwright, deployed on Vercel.
+Next.js 15 App Router, TypeScript strict, React 19 Server Components,
+Tailwind CSS 4, shadcn/ui, Prisma + PostgreSQL, NextAuth v5, Vitest, Playwright, Vercel.
 
 ## Conventions
-- Use strict TypeScript: no any, no unsafe as casts, enable strict mode in tsconfig.
-- Prefer React Server Components by default; mark Client Components only when necessary.
-- Use Zod to validate all external data (env vars, API responses, form inputs).
-- Build UI with Tailwind CSS 4 and shadcn/ui components; keep design consistent.
-- Keep pages and route handlers thin; move logic into lib/ and hooks/ modules.
+- Functional components, named exports preferred, `@/` absolute imports when configured
+- No `any`; validate external data with Zod
+- Server Components by default; `"use client"` only when needed
+- Business logic in `lib/` or server actions, not in thick page components
 
-## Key Files
-- app/layout.tsx – root layout, theme providers, global styles.
-- app/(auth)/ – authentication routes (login, register, callbacks).
-- lib/env.ts – Zod-based environment schema and runtime validation.
-- lib/db.ts – Prisma client instance and database helpers.
-- prisma/schema.prisma – database schema and relations.
+## Key files
+- `app/layout.tsx` — root layout
+- `lib/env.ts` — Zod env validation
+- `lib/db.ts` — Prisma client
+- `prisma/schema.prisma` — schema
 
 ## Commands
-- npm run dev
-- npm run build
-- npm run test
-- npx prisma migrate dev
-- npx prisma studio
+- `npm run dev` / `npm run build` / `npm run test`
+- `npx prisma migrate dev` / `npx prisma studio`
 
-## Environment Variables
-- DATABASE_URL – PostgreSQL connection string used by Prisma.
-- NEXTAUTH_SECRET – secret used to sign NextAuth tokens.
-- NEXTAUTH_URL – canonical URL for NextAuth callbacks.
-- NEXT_PUBLIC_APP_URL – public base URL for the application.
+## Env
+`DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `NEXT_PUBLIC_APP_URL`
 
-## What I expect
-1. Small, focused changes with clear intent and descriptive commit messages.
-2. Type-safe code with tests for important behavior and auth flows.
-3. No secrets committed to git; use .env.local and deployment secrets instead.
-4. ESLint and Prettier pass locally and in CI before opening a PR.
-5. Clear PR notes when introducing migrations or new environment variables.
+## Expect
+Brief plan, full file paths, production ready code, no committed secrets.

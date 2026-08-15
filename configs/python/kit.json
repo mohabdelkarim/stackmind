@@ -1,0 +1,19 @@
+{
+  "id": "python",
+  "label": "Python / FastAPI",
+  "description": "FastAPI 0.115+, async SQLAlchemy 2, Pydantic v2, Alembic",
+  "files": {
+    "agents": "AGENTS.md",
+    "claude": ".claude/CLAUDE.md",
+    "setup": "SETUP_GUIDE.md",
+    "mcp": "mcp/mcp_config.json"
+  },
+  "rules_glob": ".cursor/rules/*.mdc",
+  "mcp_packages": [
+    "@modelcontextprotocol/server-postgres",
+    "@modelcontextprotocol/server-github",
+    "@modelcontextprotocol/server-filesystem",
+    "@modelcontextprotocol/server-brave-search",
+    "@modelcontextprotocol/server-memory"
+  ]
+}

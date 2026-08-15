@@ -6,7 +6,9 @@
     "@modelcontextprotocol/server-filesystem": "2026.7.10",
     "@modelcontextprotocol/server-brave-search": "0.6.2",
     "@notionhq/notion-mcp-server": "2.5.1",
-    "@modelcontextprotocol/server-memory": "2026.7.4"
+    "@modelcontextprotocol/server-memory": "2026.7.4",
+    "@stripe/mcp": "0.3.3",
+    "@supabase/mcp-server-supabase": "0.10.0"
   },
   "tools": {
     "nextjs": "15.3.1",

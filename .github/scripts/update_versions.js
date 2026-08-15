@@ -97,7 +97,12 @@ function main() {
   }
 
   const packages = meta.packages || {};
-  const files = walkJsonFiles(configsRoot);
+  const files = walkJsonFiles(configsRoot).filter((filePath) => {
+    const base = path.basename(filePath);
+    if (base === 'kit.json') return false;
+    const rel = path.relative(configsRoot, filePath).replace(/\\/g, '/');
+    return rel.includes('/mcp/');
+  });
   let touched = 0;
 
   for (const filePath of files) {

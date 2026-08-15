@@ -24,6 +24,12 @@ node /path/to/stackmind/bin/stackmind.js init nextjs /path/to/your-project
 
 Useful flags: `--force`, `--dry-run`, `--no-mcp`, `--mcp-only`.
 
+Then run:
+
+```bash
+npx github:mohabdelkarim/stackmind doctor .
+```
+
 ## What gets written
 
 | Source | Destination |

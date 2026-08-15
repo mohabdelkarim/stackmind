@@ -8,31 +8,41 @@ const __dirname = path.dirname(__filename);
 const packageRoot = path.resolve(__dirname, '..');
 const configsRoot = path.join(packageRoot, 'configs');
 
-const STACKS = {
-  nextjs: {
-    id: 'nextjs',
-    label: 'Next.js 15',
-    description: 'App Router, TypeScript 5, Tailwind 4, Prisma 6, NextAuth v5',
-  },
-  python: {
-    id: 'python',
-    label: 'Python / FastAPI',
-    description: 'FastAPI 0.115+, async SQLAlchemy 2, Pydantic v2, Alembic',
-  },
-};
+function loadKit(stackId) {
+  const kitRoot = path.join(configsRoot, stackId);
+  const kitPath = path.join(kitRoot, 'kit.json');
+  if (!fs.existsSync(kitPath)) return null;
+  const kit = JSON.parse(fs.readFileSync(kitPath, 'utf8'));
+  return { ...kit, root: kitRoot };
+}
+
+function discoverStacks() {
+  if (!fs.existsSync(configsRoot)) return {};
+  const stacks = {};
+  for (const name of fs.readdirSync(configsRoot)) {
+    const kit = loadKit(name);
+    if (!kit) continue;
+    stacks[kit.id || name] = kit;
+  }
+  return stacks;
+}
 
 function usage(exitCode = 0) {
+  const stacks = discoverStacks();
   const lines = [
-    'stackmind — install AI coding configs by stack',
+    'stackmind - install free AI coding configs by stack',
     '',
     'Usage:',
     '  stackmind list',
+    '  stackmind doctor [targetDir]',
     '  stackmind init <stack> [targetDir] [options]',
     '',
     'Stacks:',
-    ...Object.values(STACKS).map((s) => `  ${s.id.padEnd(10)} ${s.label} — ${s.description}`),
+    ...Object.values(stacks).map(
+      (s) => `  ${(s.id || '').padEnd(10)} ${s.label} - ${s.description}`,
+    ),
     '',
-    'Options:',
+    'Options for init:',
     '  --force       Overwrite existing files',
     '  --dry-run     Show what would be written',
     '  --no-mcp      Skip MCP config install',
@@ -41,7 +51,8 @@ function usage(exitCode = 0) {
     '',
     'Examples:',
     '  npx github:mohabdelkarim/stackmind init nextjs',
-    '  stackmind init python ./my-api --force',
+    '  stackmind doctor .',
+    '  stackmind init python ./my_api --force',
   ];
   console.log(lines.join('\n'));
   process.exit(exitCode);
@@ -75,20 +86,7 @@ function copyFile(src, dest, { force, dryRun }) {
   }
   ensureDir(path.dirname(dest), false);
   fs.copyFileSync(src, dest);
-  return { status: fs.existsSync(dest) && force ? 'overwrite' : 'write', dest };
-}
-
-function writeJson(dest, data, { force, dryRun }) {
-  if (fs.existsSync(dest) && !force) {
-    return { status: 'skip', dest };
-  }
-  const body = `${JSON.stringify(data, null, 2)}\n`;
-  if (dryRun) {
-    return { status: fs.existsSync(dest) ? 'overwrite' : 'write', dest };
-  }
-  ensureDir(path.dirname(dest), false);
-  fs.writeFileSync(dest, body, 'utf8');
-  return { status: 'write', dest };
+  return { status: force ? 'overwrite' : 'write', dest };
 }
 
 function mergeMcpConfig(srcPath, destPath, { force, dryRun }) {
@@ -121,49 +119,136 @@ function mergeMcpConfig(srcPath, destPath, { force, dryRun }) {
 
   ensureDir(path.dirname(destPath), false);
   fs.writeFileSync(destPath, `${JSON.stringify(merged, null, 2)}\n`, 'utf8');
-  return { status: fs.existsSync(destPath) ? 'merge' : 'write', dest: destPath };
+  return { status: 'merge', dest: destPath };
 }
 
 function listStacks() {
-  console.log('Available stacks:\n');
-  for (const stack of Object.values(STACKS)) {
-    const dir = path.join(configsRoot, stack.id);
-    const ok = fs.existsSync(dir) ? 'ready' : 'missing';
-    console.log(`  ${stack.id.padEnd(10)} ${stack.label}`);
+  const stacks = discoverStacks();
+  console.log('Available stacks (free MIT):\n');
+  for (const stack of Object.values(stacks)) {
+    const ok = fs.existsSync(stack.root) ? 'ready' : 'missing';
+    console.log(`  ${(stack.id || '').padEnd(10)} ${stack.label}`);
     console.log(`             ${stack.description}`);
     console.log(`             status: ${ok}\n`);
   }
 }
 
+function doctor(targetDir) {
+  const target = path.resolve(targetDir);
+  const nodeMajor = Number(process.versions.node.split('.')[0]);
+  let failed = 0;
+
+  console.log(`[stackmind] doctor -> ${target}\n`);
+
+  const checks = [];
+
+  if (nodeMajor >= 22) {
+    checks.push({ ok: true, msg: `Node.js ${process.versions.node} (>= 22)` });
+  } else {
+    checks.push({ ok: false, msg: `Node.js ${process.versions.node} (need >= 22)` });
+    failed += 1;
+  }
+
+  if (fs.existsSync(configsRoot)) {
+    checks.push({ ok: true, msg: `configs present at ${configsRoot}` });
+  } else {
+    checks.push({ ok: false, msg: 'configs/ directory missing' });
+    failed += 1;
+  }
+
+  const stacks = discoverStacks();
+  const stackIds = Object.keys(stacks);
+  if (stackIds.length > 0) {
+    checks.push({ ok: true, msg: `kits: ${stackIds.join(', ')}` });
+  } else {
+    checks.push({ ok: false, msg: 'no kit.json files found under configs/' });
+    failed += 1;
+  }
+
+  for (const kit of Object.values(stacks)) {
+    const agents = path.join(kit.root, kit.files?.agents || 'AGENTS.md');
+    const claude = path.join(kit.root, kit.files?.claude || '.claude/CLAUDE.md');
+    const mcp = path.join(kit.root, kit.files?.mcp || 'mcp/mcp_config.json');
+    const rulesDir = path.join(kit.root, '.cursor', 'rules');
+    const bits = [
+      fs.existsSync(agents) ? 'AGENTS.md' : null,
+      fs.existsSync(claude) ? 'CLAUDE.md' : null,
+      fs.existsSync(mcp) ? 'mcp_config.json' : null,
+      fs.existsSync(rulesDir) ? 'rules' : null,
+    ].filter(Boolean);
+    const complete = bits.length === 4;
+    checks.push({
+      ok: complete,
+      msg: complete
+        ? `kit ${kit.id} complete (${bits.join(', ')})`
+        : `kit ${kit.id} incomplete (found: ${bits.join(', ') || 'none'})`,
+    });
+    if (!complete) failed += 1;
+  }
+
+  if (!fs.existsSync(target)) {
+    checks.push({ ok: false, msg: `target does not exist: ${target}` });
+    failed += 1;
+  } else {
+    checks.push({ ok: true, msg: `target exists: ${target}` });
+    const markers = [
+      'AGENTS.md',
+      '.claude/CLAUDE.md',
+      '.cursor/mcp.json',
+      'stackmind.mcp.json',
+    ];
+    for (const rel of markers) {
+      const p = path.join(target, rel);
+      if (fs.existsSync(p)) {
+        checks.push({ ok: true, msg: `found in target: ${rel}` });
+      } else {
+        checks.push({ ok: true, msg: `not installed yet: ${rel} (ok before init)` });
+      }
+    }
+  }
+
+  for (const c of checks) {
+    console.log(`  [${c.ok ? 'ok' : 'fail'}] ${c.msg}`);
+  }
+
+  if (failed > 0) {
+    console.error(`\n[stackmind] doctor failed (${failed} issue(s))`);
+    process.exit(1);
+  }
+  console.log('\n[stackmind] doctor passed');
+}
+
 function initStack(stackId, targetDir, options) {
-  const stack = STACKS[stackId];
-  if (!stack) {
+  const stacks = discoverStacks();
+  const kit = stacks[stackId];
+  if (!kit) {
     console.error(`[stackmind] Unknown stack "${stackId}". Run: stackmind list`);
     process.exit(1);
   }
 
-  const kitRoot = path.join(configsRoot, stackId);
-  if (!fs.existsSync(kitRoot)) {
-    console.error(`[stackmind] Kit not found at ${kitRoot}`);
-    process.exit(1);
+  const target = path.resolve(targetDir);
+  if (!options.dryRun && !fs.existsSync(target)) {
+    ensureDir(target, false);
   }
 
-  const target = path.resolve(targetDir);
   const results = [];
+  const agentsRel = kit.files?.agents || 'AGENTS.md';
+  const claudeRel = kit.files?.claude || '.claude/CLAUDE.md';
+  const mcpRel = kit.files?.mcp || 'mcp/mcp_config.json';
 
   if (!options.mcpOnly) {
     results.push(
-      copyFile(path.join(kitRoot, 'AGENTS.md'), path.join(target, 'AGENTS.md'), options),
+      copyFile(path.join(kit.root, agentsRel), path.join(target, 'AGENTS.md'), options),
     );
 
-    const claudeSrc = path.join(kitRoot, '.claude', 'CLAUDE.md');
+    const claudeSrc = path.join(kit.root, claudeRel);
     if (fs.existsSync(claudeSrc)) {
       results.push(
         copyFile(claudeSrc, path.join(target, '.claude', 'CLAUDE.md'), options),
       );
     }
 
-    const rulesDir = path.join(kitRoot, '.cursor', 'rules');
+    const rulesDir = path.join(kit.root, '.cursor', 'rules');
     if (fs.existsSync(rulesDir)) {
       for (const name of fs.readdirSync(rulesDir)) {
         if (!name.endsWith('.mdc')) continue;
@@ -179,7 +264,7 @@ function initStack(stackId, targetDir, options) {
   }
 
   if (!options.noMcp) {
-    const mcpSrc = path.join(kitRoot, 'mcp', 'mcp_config.json');
+    const mcpSrc = path.join(kit.root, mcpRel);
     if (fs.existsSync(mcpSrc)) {
       results.push(
         mergeMcpConfig(mcpSrc, path.join(target, '.cursor', 'mcp.json'), options),
@@ -191,17 +276,19 @@ function initStack(stackId, targetDir, options) {
   }
 
   const label = options.dryRun ? 'Dry run' : 'Installed';
-  console.log(`[stackmind] ${label} ${stack.label} -> ${target}\n`);
+  console.log(`[stackmind] ${label} ${kit.label} -> ${target}\n`);
   for (const result of results) {
     const rel = path.relative(target, result.dest) || result.dest;
     console.log(`  [${result.status}] ${rel}`);
   }
 
   if (!options.dryRun) {
+    const setup = path.join(kit.root, kit.files?.setup || 'SETUP_GUIDE.md');
     console.log('\nNext:');
-    console.log(`  1. Open ${path.join(kitRoot, 'SETUP_GUIDE.md')} for verification steps`);
+    console.log(`  1. Read ${setup}`);
     console.log('  2. Restart Cursor / Claude Code so rules and MCP reload');
-    console.log('  3. Set env vars for any MCP servers you enable (see mcp README)');
+    console.log('  3. Set env vars for MCP servers you enable (see mcp README)');
+    console.log('  4. Run: stackmind doctor <targetDir>');
   }
 }
 
@@ -216,6 +303,11 @@ function main() {
 
   if (command === 'list') {
     listStacks();
+    return;
+  }
+
+  if (command === 'doctor') {
+    doctor(positional[1] || process.cwd());
     return;
   }
 

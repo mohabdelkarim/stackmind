@@ -1,0 +1,14 @@
+{
+  "name": "supabase",
+  "description": "Optional Supabase MCP for database and auth. Add to mcp config only when needed.",
+  "config": {
+    "command": "npx",
+    "args": [
+      "@supabase/mcp-server-supabase@0.10.0"
+    ],
+    "env": {
+      "SUPABASE_URL": "${SUPABASE_URL}",
+      "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 Pinned MCP servers for the Next.js kit. Versions are tracked in `meta/versions.json` and updated by `npm run update`.
 
-## Servers
+## Default servers (installed by `init`)
 
 | Server | Package | Env |
 |--------|---------|-----|
@@ -13,16 +13,24 @@ Pinned MCP servers for the Next.js kit. Versions are tracked in `meta/versions.j
 | notion | `@notionhq/notion-mcp-server` | `NOTION_TOKEN` |
 | memory | `@modelcontextprotocol/server-memory` | (none) |
 
+## Optional snippets
+
+Copy from `snippets/` into your MCP config when needed:
+
+| Server | Package | Env |
+|--------|---------|-----|
+| stripe | `@stripe/mcp` | `STRIPE_SECRET_KEY` |
+| supabase | `@supabase/mcp-server-supabase` | `SUPABASE_URL`, `SUPABASE_ACCESS_TOKEN` |
+
 ## Install
 
-`stackmind init nextjs` merges these into `.cursor/mcp.json` and writes `stackmind.mcp.json`.
-
-For mix-and-match, copy individual files from `snippets/`.
+`stackmind init nextjs` merges defaults into `.cursor/mcp.json` and writes `stackmind.mcp.json`.
 
 ## API keys
 
-- Brave: https://brave.com/search/api/
-- GitHub: classic or fine-grained PAT with repo scope as needed
-- Notion: internal integration token from Notion developers settings
+You provide keys. Never commit them.
 
-Never commit real keys. Use local env or your MCP client secret store.
+- Brave: https://brave.com/search/api/
+- GitHub: PAT with the scopes you need
+- Notion: internal integration token
+- Stripe / Supabase: from their dashboards

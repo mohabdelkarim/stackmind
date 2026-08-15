@@ -1,6 +1,6 @@
 {
   "name": "stackmind",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Install AI coding configs for Cursor, Claude Code, and other agents by stack",
   "type": "module",
   "bin": {
@@ -10,6 +10,8 @@
     "bin",
     "configs",
     "meta",
+    "docs",
+    "scripts",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
@@ -23,6 +25,8 @@
     "update": "node .github/scripts/update_versions.js",
     "validate": "node .github/scripts/validator.js",
     "changelog": "node .github/scripts/changelog_generator.js",
+    "doctor": "node bin/stackmind.js doctor",
+    "demo_proof": "node scripts/demo_proof.js",
     "examples": "node bin/stackmind.js init nextjs ./examples/nextjs_applied --force && node bin/stackmind.js init python ./examples/python_applied --force"
   },
   "keywords": [

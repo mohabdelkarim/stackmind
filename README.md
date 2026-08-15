@@ -1,86 +1,105 @@
 # stackmind
 
-Install production ready AI coding configs for Cursor, Claude Code, Copilot, Gemini, and other agents.
+Free, MIT licensed AI coding configs for Cursor, Claude Code, Copilot, Gemini, and other agents.
 
-One command drops in `AGENTS.md`, Claude manuals, Cursor rules, and pinned MCP servers for **Next.js** or **Python FastAPI**. MCP package versions stay current through a deterministic daily updater.
+Install stack aware `AGENTS.md`, Claude manuals, Cursor rules, and pinned MCP servers in about two minutes. No paid tiers.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-6366f1?style=flat-square)](./LICENSE)
-[![Node >=22](https://img.shields.io/badge/Node.js-%3E%3D22-22c55e?style=flat-square)](https://nodejs.org)
+## Who it is for
 
-## Why this exists
+Developers who start new projects often and do not want to re teach the agent the stack, conventions, and tool wiring every time.
 
-Every AI coding tool needs project context. Copying rules by hand drifts. MCP pins go stale. **stackmind** is a small CLI plus curated kits so new projects start agent ready.
+## What you get
 
-## Quick start
+| Stack | Command |
+|-------|---------|
+| Next.js 15 (App Router, TypeScript, Prisma, NextAuth) | `init nextjs` |
+| Python FastAPI (async SQLAlchemy, Pydantic v2, Alembic) | `init python` |
+
+Each install writes:
+
+- `AGENTS.md` (canonical rules for all agents)
+- `.claude/CLAUDE.md` (commands, key files, env vars)
+- `.cursor/rules/*.mdc` (Cursor glob scoped overlays)
+- `.cursor/mcp.json` (merged MCP servers) and `stackmind.mcp.json`
+
+## Two minute setup
 
 ```bash
+# In your project root
 npx github:mohabdelkarim/stackmind init nextjs
 # or
 npx github:mohabdelkarim/stackmind init python
 ```
 
 ```bash
+# From a clone
 git clone https://github.com/mohabdelkarim/stackmind.git
 cd stackmind
 npm ci
+node bin/stackmind.js doctor
 node bin/stackmind.js init nextjs ~/your_project
 npm run validate
 ```
 
-Full verification: `configs/nextjs/SETUP_GUIDE.md` or `configs/python/SETUP_GUIDE.md`.
+Restart Cursor or Claude Code after install.
 
-## Kits
+### Quick verification
 
-| Stack | Path | Includes |
-|-------|------|----------|
-| Next.js 15 | `configs/nextjs/` | App Router, TypeScript, Tailwind, Prisma, NextAuth |
-| Python FastAPI | `configs/python/` | FastAPI, async SQLAlchemy, Pydantic v2, Alembic |
+Ask the agent:
 
-What `init` writes:
+- Next.js: "What stack and folder conventions does this project use?"
+- FastAPI: "Where should business logic live, and how do we run migrations?"
 
-| File | Role |
-|------|------|
-| `AGENTS.md` | Canonical rules for all agents |
-| `.claude/CLAUDE.md` | Claude Code commands, key files, env vars |
-| `.cursor/rules/*.mdc` | Cursor glob scoped overlays |
-| `.cursor/mcp.json` | Merged MCP servers with pinned versions |
-| `stackmind.mcp.json` | Portable MCP copy for other clients |
+Expect answers that match `AGENTS.md` and `.claude/CLAUDE.md`.
+
+Full steps: [configs/nextjs/SETUP_GUIDE.md](configs/nextjs/SETUP_GUIDE.md) or [configs/python/SETUP_GUIDE.md](configs/python/SETUP_GUIDE.md).
 
 ## CLI
 
 ```bash
 stackmind list
+stackmind doctor [targetDir]
 stackmind init <stack> [targetDir] [--force] [--dry-run] [--no-mcp] [--mcp-only]
 ```
 
-## Auto updater
+## Proof
 
-Daily at **07:00 UTC**, GitHub Actions:
+Reproducible install checks and before/after notes: [docs/DEMO.md](docs/DEMO.md)
 
-1. Checks npm for newer MCP package versions in `meta/versions.json`
-2. Pins versions across `configs/*/mcp/` with a deterministic script
-3. Validates JSON
-4. Commits under `MOHAbdelkarim <mohaabdelkarim2@gmail.com>`
+```bash
+npm run demo_proof
+```
 
-No third party AI API key required.
+Applied outputs (reference): [examples/](examples/)
+
+## MCP
+
+Pinned servers live under each kit's `mcp/` folder. Versions are tracked in [meta/versions.json](meta/versions.json) and updated by a deterministic daily GitHub Action (no LLM rewriting configs). You supply your own API keys via env vars. Never commit secrets.
+
+Optional snippets (Stripe, Supabase, Notion, and others) are in `configs/*/mcp/snippets/`.
+
+## Automation
+
+Daily at 07:00 UTC the workflow checks npm for newer MCP pins, updates JSON configs, validates, and commits as `MOHAbdelkarim <mohaabdelkarim2@gmail.com>`. Failures open a GitHub issue.
 
 ```bash
 npm run check
 npm run update
 npm run validate
-npm run examples
 ```
 
-## Examples
+## Non goals
 
-- `examples/nextjs_applied/`
-- `examples/python_applied/`
-
-Regenerate with `npm run examples`.
+- Not a paid Gumroad pack
+- Not a full app scaffold (no generated Next.js/FastAPI app code)
+- Not a substitute for reading your own product requirements
+- Legacy `.cursorrules` is not installed; use `AGENTS.md` + `.cursor/rules/`
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md). Keep MCP versions pinned. Do not commit secrets.
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADDING_A_STACK.md](docs/ADDING_A_STACK.md). New stacks stay free and public.
+
+Soft launch notes: [docs/LAUNCH.md](docs/LAUNCH.md)
 
 ## License
 
