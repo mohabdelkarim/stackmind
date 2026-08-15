@@ -5,62 +5,48 @@
 
 ## Project Overview
 
-A production-ready FastAPI 0.115+ backend using Python 3.12+ and async SQLAlchemy 2.x.
-PostgreSQL with Alembic migrations, Pydantic v2 for schemas and settings.
-Quality enforced via pytest, pytest-asyncio, Ruff, mypy, and containerized dev with Docker.
+A production-ready FastAPI 0.115+ backend using Python 3.12+ and async SQLAlchemy 2.x when persistence is needed.
+Pydantic v2 settings, pytest + pytest-asyncio, Ruff, mypy.
+Battle-tested against `examples/python_live` (thin `app/api`, logic in `app/services`, settings in `app/core`).
 
 ## Project structure
 
 - `app/api/` HTTP routes (keep thin)
 - `app/services/` domain logic
-- `app/models/` SQLAlchemy models
+- `app/models/` SQLAlchemy models when used
 - `app/core/` settings, database, logging, security
-- `alembic/` migrations
+- `alembic/` migrations when used
 - `tests/` pytest suites
 
 ## [architect]
 
-- Define the overall service boundaries, module layout, and API surface.
-- Keep `app/api/` thin and push domain logic into `app/services/` and `app/models/`.
-- Ensure settings, logging, and error handling are centralized in `app/core/`.
-- Guard non-functional requirements: performance, observability, and security.
+- Keep `app/api/` thin; push domain logic into `app/services/`.
+- Centralize settings in `app/core/config.py`.
 
 ## [backend]
 
-- Implement FastAPI routes, dependencies, and background tasks.
-- Use async SQLAlchemy 2.x with asyncpg and transactional patterns.
-- Apply Pydantic v2 models for all request/response contracts.
-- Keep code tested, type-checked, and aligned with the architect's design.
+- Async FastAPI routes and dependencies.
+- Pydantic v2 for request/response contracts.
+- Prefer `httpx.AsyncClient` + ASGITransport in tests.
 
 ## [database]
 
-- Design normalized schemas and indexes in `app/models/`.
-- Manage Alembic migrations and review auto-generated diffs.
-- Optimize queries and connection usage for async workloads.
-- Coordinate with backend to evolve schemas without breaking clients.
+- Use async SQLAlchemy 2.x + Alembic when you need persistence.
+- Do not block the event loop.
 
 ## [testing]
 
-- Maintain pytest and pytest-asyncio test suites.
-- Provide fixtures for DB, `httpx.AsyncClient`, and settings overrides.
-- Enforce fast, deterministic tests suitable for CI and local runs.
-- Track coverage on critical paths (auth, error handling, data integrity).
+- pytest + pytest-asyncio.
+- Cover health and critical auth/data paths.
 
 ## [reviewer]
 
-- Review for correctness, security, and alignment with conventions.
-- Check type hints, async boundaries, and transaction handling.
-- Ensure migrations, env vars, and docs are updated with code changes.
-- Request incremental refactors to keep the codebase healthy.
+- Type hints everywhere under `app/`.
+- No secrets in git.
+- Migrations and env docs updated with schema changes.
 
 ## Global Rules
 
-- Favor explicitness over magic; avoid hidden side effects and global state.
-- Never block the event loop with sync I/O; wrap in executors only when necessary.
-- Use type hints everywhere; no untyped functions in `app/`.
-- Do not commit secrets or production credentials; use environment variables and `.env.example`.
-- Keep public APIs stable; document and version any breaking changes.
-- Prefer small, composable modules and functions over large, monolithic ones.
-- Every meaningful change should ship with tests, type-checks, and updated docs.
-- When generating or editing code, show the full file path (for example `app/api/users.py`).
-- Call out required environment variables whenever changing configuration or authentication.
+- Explicitness over magic.
+- Show full file paths (example: `app/api/health.py`).
+- Smoke test with `pytest` in `examples/python_live` style.

@@ -1,0 +1,13 @@
+{
+  "name": "github",
+  "description": "GitHub context for Nuxt projects.",
+  "config": {
+    "command": "npx",
+    "args": [
+      "@modelcontextprotocol/server-github@2025.4.8"
+    ],
+    "env": {
+      "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+    }
+  }
+}

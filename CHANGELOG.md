@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-08-15
+
+### Added
+- NestJS and Vue/Nuxt free kits
+- Live sample apps: `examples/nextjs_live`, `examples/python_live`, `examples/nestjs_live`, `examples/vue_nuxt_live`
+- `docs/demo.html` visual demo page
+- `npm run live_smoke` for real app smoke/build/pytest
+- Automated proof log `docs/PROOF_LOG.md`
+
+### Changed
+- Next.js and Python `AGENTS.md` updated from live sample learnings
+
 ## [1.2.0] - 2026-08-15
 
 ### Added

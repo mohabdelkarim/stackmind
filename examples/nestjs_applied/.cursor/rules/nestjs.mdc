@@ -1,0 +1,18 @@
+---
+description: "Cursor overlay for NestJS src files. Canonical rules live in AGENTS.md."
+globs:
+  - "src/**/*.ts"
+  - "prisma/**/*.prisma"
+  - "test/**/*.ts"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+When editing matching files:
+
+- Keep controllers thin; put logic in services.
+- Use Nest DI; do not `new` services by hand.
+- Validate DTOs at the HTTP boundary.
+- Update Prisma schema + migrations together.
+- Show the full file path before proposing code.

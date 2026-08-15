@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>stackmind demo</title>
+  <style>
+    :root {
+      --bg: #0f1412;
+      --ink: #e8f0ea;
+      --muted: #9bb0a2;
+      --accent: #7dffb3;
+      --panel: #1a221e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #1f3b2e 0%, transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, #243048 0%, transparent 50%),
+        var(--bg);
+      color: var(--ink);
+      padding: 2.5rem clamp(1rem, 4vw, 3rem);
+    }
+    h1 {
+      font-family: "IBM Plex Serif", Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      margin: 0 0 0.5rem;
+    }
+    .sub { color: var(--muted); max-width: 42rem; }
+    .stage {
+      margin-top: 2rem;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .card {
+      background: color-mix(in srgb, var(--panel) 90%, black);
+      border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: rise 0.7s ease forwards;
+    }
+    .card:nth-child(2) { animation-delay: 0.15s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.45s; }
+    .label { color: var(--accent); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    pre {
+      margin: 0.75rem 0 0;
+      white-space: pre-wrap;
+      font-family: "IBM Plex Mono", Consolas, monospace;
+      font-size: 0.85rem;
+      color: var(--ink);
+    }
+    .cta {
+      margin-top: 2rem;
+      display: inline-block;
+      padding: 0.7rem 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      color: var(--bg);
+      background: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>stackmind demo</h1>
+  <p class="sub">
+    Free AI coding kits. One command installs AGENTS.md, Cursor rules, CLAUDE.md, and pinned MCP configs.
+    Proof runs against live sample apps under <code>examples/*_live</code>.
+  </p>
+  <div class="stage">
+    <article class="card">
+      <div class="label">Step 1</div>
+      <pre>npx github:mohabdelkarim/stackmind init nextjs</pre>
+    </article>
+    <article class="card">
+      <div class="label">Step 2</div>
+      <pre>stackmind doctor .
+npm run demo_proof</pre>
+    </article>
+    <article class="card">
+      <div class="label">Live apps</div>
+      <pre>examples/nextjs_live
+examples/python_live
+examples/nestjs_live
+examples/vue_nuxt_live</pre>
+    </article>
+    <article class="card">
+      <div class="label">Stacks</div>
+      <pre>nextjs · python
+nestjs · vue_nuxt</pre>
+    </article>
+  </div>
+  <a class="cta" href="https://github.com/mohabdelkarim/stackmind">Open on GitHub</a>
+  <script>
+    // Lightweight motion for screen recordings / local preview
+    document.querySelectorAll(".card").forEach((el, i) => {
+      el.style.animationDelay = `${i * 0.12}s`;
+    });
+  </script>
+</body>
+</html>

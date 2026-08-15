@@ -1,44 +1,72 @@
 # Demo and proof
 
-This document is the reproducible proof that stackmind installs correctly. Record a short screen capture of these steps if you want a video for social posts; link it here when published.
+stackmind is proven with automated installs plus live sample apps under `examples/*_live`.
+
+## Visual demo
+
+Open [demo.html](demo.html) in a browser (or screen record it for social posts).
+
+GitHub file link: https://github.com/mohabdelkarim/stackmind/blob/main/docs/demo.html
 
 ## Automated proof
-
-From the repo root:
 
 ```bash
 npm ci
 npm run demo_proof
+npm run live_smoke
 ```
 
-Expected: exit code 0, doctor pass, and a temp project containing `AGENTS.md`, `.claude/CLAUDE.md`, `.cursor/rules/*.mdc`, and MCP JSON files.
+This:
 
-## Manual proof (Next.js)
+1. Runs `stackmind doctor`
+2. Inits all stacks (`nextjs`, `python`, `nestjs`, `vue_nuxt`) into temp dirs
+3. Inits kits into each `examples/*_live` app
+4. Runs smoke checks
+5. Writes [PROOF_LOG.md](PROOF_LOG.md)
 
-1. Create or open a Next.js app directory.
-2. Run `npx github:mohabdelkarim/stackmind init nextjs . --force`
-3. Restart Cursor or Claude Code.
-4. Ask: "What stack and folder conventions does this project use?"
-5. Expect: App Router, TypeScript, Prisma, Zod, Server Components by default, paths under `app/` and `lib/`.
+## Live apps
 
-### Before / after
+### Next.js live
+
+```bash
+cd examples/nextjs_live
+npm install
+npm run smoke
+npm run build
+```
+
+### Python live
+
+```bash
+cd examples/python_live
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+pytest
+```
+
+### NestJS / Vue Nuxt live
+
+Structure + kit smoke:
+
+```bash
+cd examples/nestjs_live && npm run smoke
+cd examples/vue_nuxt_live && npm run smoke
+```
+
+## Before / after
 
 | Before | After |
 |--------|-------|
-| Agent invents random folder layout | Uses `app/`, `components/`, `lib/`, `prisma/` |
-| Suggests Client Components everywhere | Prefers Server Components; `"use client"` only when needed |
-| Forgets env validation | Points at Zod + `lib/env.ts` |
-| MCP missing or unpinned | `.cursor/mcp.json` has pinned `@package@version` servers |
+| Agent invents random folders | Follows kit structure (`app/`, `lib/`, or Nest/Nuxt layouts) |
+| Client Components everywhere (Next) | Server Components by default |
+| Fat FastAPI routers | Thin `app/api` + `app/services` |
+| Unpinned MCP | Pinned `@package@version` in `.cursor/mcp.json` |
 
-## Manual proof (FastAPI)
+## Screen recording tip
 
-1. Open a FastAPI project directory.
-2. Run `npx github:mohabdelkarim/stackmind init python . --force`
-3. Ask: "Where should business logic live, and how do we run migrations?"
-4. Expect: `app/services/` for domain logic, Alembic commands from `CLAUDE.md`.
+1. Open `docs/demo.html`
+2. Run `npm run demo_proof` in a terminal beside it
+3. Upload the recording to Loom/YouTube and paste the URL below
 
-## Video (optional)
-
-When you record a Loom or YouTube clip of the steps above, add the URL below:
-
-- Video URL: _(add when published)_
+- Video URL: use `docs/demo.html` + `PROOF_LOG.md` as the current public proof (replace with Loom/YouTube when you upload)

@@ -1,6 +1,6 @@
 {
   "name": "stackmind",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Install AI coding configs for Cursor, Claude Code, and other agents by stack",
   "type": "module",
   "bin": {
@@ -27,7 +27,8 @@
     "changelog": "node .github/scripts/changelog_generator.js",
     "doctor": "node bin/stackmind.js doctor",
     "demo_proof": "node scripts/demo_proof.js",
-    "examples": "node bin/stackmind.js init nextjs ./examples/nextjs_applied --force && node bin/stackmind.js init python ./examples/python_applied --force"
+    "live_smoke": "node scripts/live_smoke.js",
+    "examples": "node bin/stackmind.js init nextjs ./examples/nextjs_applied --force && node bin/stackmind.js init python ./examples/python_applied --force && node bin/stackmind.js init nestjs ./examples/nestjs_applied --force && node bin/stackmind.js init vue_nuxt ./examples/vue_nuxt_applied --force"
   },
   "keywords": [
     "cursor",
@@ -36,6 +37,9 @@
     "mcp",
     "nextjs",
     "fastapi",
+    "nestjs",
+    "nuxt",
+    "vue",
     "ai-coding"
   ],
   "repository": {

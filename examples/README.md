@@ -1,16 +1,18 @@
-# Applied examples
+# Examples
 
-These folders are the output of:
+## Applied configs only
+
+- `nextjs_applied/`, `python_applied/`, `nestjs_applied/`, `vue_nuxt_applied/`
+  Output of `stackmind init` (reference installs).
+
+## Live sample apps (battle tested)
+
+- `nextjs_live/` real Next.js App Router app (`npm run smoke`, `npm run build`)
+- `python_live/` real FastAPI app (`pytest`)
+- `nestjs_live/` Nest module shape + kit smoke
+- `vue_nuxt_live/` Nuxt pages/API shape + kit smoke
 
 ```bash
-npm run examples
+npm run demo_proof
+npm run live_smoke
 ```
-
-which runs:
-
-```bash
-node bin/stackmind.js init nextjs ./examples/nextjs_applied --force
-node bin/stackmind.js init python ./examples/python_applied --force
-```
-
-Use them as a reference for what `stackmind init` writes into a real project.

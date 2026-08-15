@@ -1,0 +1,19 @@
+---
+description: "Cursor overlay for FastAPI/Python app files. Canonical rules live in AGENTS.md."
+globs:
+  - "app/**/*.py"
+  - "alembic/**/*.py"
+  - "tests/**/*.py"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md` for this stack.
+
+When editing matching files:
+
+- Keep FastAPI routers thin; put domain logic in `app/services/`.
+- Use async SQLAlchemy 2.x patterns; do not block the event loop.
+- Validate request/response bodies with Pydantic v2 models.
+- Add or update Alembic migrations when models change.
+- Prefer typed functions everywhere under `app/`.
+- Show the full file path before proposing code.

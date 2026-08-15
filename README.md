@@ -12,8 +12,10 @@ Developers who start new projects often and do not want to re teach the agent th
 
 | Stack | Command |
 |-------|---------|
-| Next.js 15 (App Router, TypeScript, Prisma, NextAuth) | `init nextjs` |
-| Python FastAPI (async SQLAlchemy, Pydantic v2, Alembic) | `init python` |
+| Next.js 15 | `init nextjs` |
+| Python FastAPI | `init python` |
+| NestJS | `init nestjs` |
+| Vue / Nuxt 3 | `init vue_nuxt` |
 
 Each install writes:
 
@@ -25,34 +27,41 @@ Each install writes:
 ## Two minute setup
 
 ```bash
-# In your project root
 npx github:mohabdelkarim/stackmind init nextjs
-# or
-npx github:mohabdelkarim/stackmind init python
+# or: python | nestjs | vue_nuxt
 ```
 
 ```bash
-# From a clone
 git clone https://github.com/mohabdelkarim/stackmind.git
 cd stackmind
 npm ci
 node bin/stackmind.js doctor
 node bin/stackmind.js init nextjs ~/your_project
 npm run validate
+npm run demo_proof
 ```
 
 Restart Cursor or Claude Code after install.
 
-### Quick verification
+## Live sample apps (battle tested)
 
-Ask the agent:
+| Sample | What it proves |
+|--------|----------------|
+| [examples/nextjs_live](examples/nextjs_live) | Real App Router app + Zod `lib/env.ts` + health API + kit |
+| [examples/python_live](examples/python_live) | Real FastAPI app + pytest health test + kit |
+| [examples/nestjs_live](examples/nestjs_live) | Nest feature module shape + kit smoke |
+| [examples/vue_nuxt_live](examples/vue_nuxt_live) | Nuxt pages/server API shape + kit smoke |
 
-- Next.js: "What stack and folder conventions does this project use?"
-- FastAPI: "Where should business logic live, and how do we run migrations?"
+## Proof and demo
 
-Expect answers that match `AGENTS.md` and `.claude/CLAUDE.md`.
+- Walkthrough: [docs/DEMO.md](docs/DEMO.md)
+- Visual demo page (open locally or screen record): [docs/demo.html](docs/demo.html)
+- Latest automated proof log: [docs/PROOF_LOG.md](docs/PROOF_LOG.md)
 
-Full steps: [configs/nextjs/SETUP_GUIDE.md](configs/nextjs/SETUP_GUIDE.md) or [configs/python/SETUP_GUIDE.md](configs/python/SETUP_GUIDE.md).
+```bash
+npm run demo_proof
+npm run live_smoke
+```
 
 ## CLI
 
@@ -62,44 +71,24 @@ stackmind doctor [targetDir]
 stackmind init <stack> [targetDir] [--force] [--dry-run] [--no-mcp] [--mcp-only]
 ```
 
-## Proof
-
-Reproducible install checks and before/after notes: [docs/DEMO.md](docs/DEMO.md)
-
-```bash
-npm run demo_proof
-```
-
-Applied outputs (reference): [examples/](examples/)
-
 ## MCP
 
-Pinned servers live under each kit's `mcp/` folder. Versions are tracked in [meta/versions.json](meta/versions.json) and updated by a deterministic daily GitHub Action (no LLM rewriting configs). You supply your own API keys via env vars. Never commit secrets.
-
-Optional snippets (Stripe, Supabase, Notion, and others) are in `configs/*/mcp/snippets/`.
+Pinned servers under each kit's `mcp/`. Versions in [meta/versions.json](meta/versions.json). Deterministic daily updater. You supply API keys. Never commit secrets.
 
 ## Automation
 
-Daily at 07:00 UTC the workflow checks npm for newer MCP pins, updates JSON configs, validates, and commits as `MOHAbdelkarim <mohaabdelkarim2@gmail.com>`. Failures open a GitHub issue.
-
-```bash
-npm run check
-npm run update
-npm run validate
-```
+Daily at 07:00 UTC: check npm pins, update MCP JSON, validate, commit as `MOHAbdelkarim <mohaabdelkarim2@gmail.com>`.
 
 ## Non goals
 
-- Not a paid Gumroad pack
-- Not a full app scaffold (no generated Next.js/FastAPI app code)
-- Not a substitute for reading your own product requirements
-- Legacy `.cursorrules` is not installed; use `AGENTS.md` + `.cursor/rules/`
+- Not a paid product
+- Not a replacement for your product requirements
+- Kits configure agents; live samples under `examples/*_live` show real usage
+- Legacy `.cursorrules` is not installed
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADDING_A_STACK.md](docs/ADDING_A_STACK.md). New stacks stay free and public.
-
-Soft launch notes: [docs/LAUNCH.md](docs/LAUNCH.md)
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADDING_A_STACK.md](docs/ADDING_A_STACK.md).
 
 ## License
 

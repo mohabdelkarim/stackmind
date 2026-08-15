@@ -1,0 +1,8 @@
+{
+  "name": "stackmind_vue_nuxt_live",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "smoke": "node scripts/smoke.mjs"
+  }
+}

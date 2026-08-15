@@ -1,0 +1,20 @@
+---
+description: "Cursor overlay for Nuxt/Vue files. Canonical rules live in AGENTS.md."
+globs:
+  - "pages/**/*.vue"
+  - "components/**/*.vue"
+  - "composables/**/*.ts"
+  - "server/**/*.ts"
+  - "stores/**/*.ts"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+When editing matching files:
+
+- Use `<script setup lang="ts">`.
+- Keep API logic in `server/api/`, not in components.
+- Prefer composables for shared client logic.
+- Do not put secrets in client-visible code.
+- Show the full file path before proposing code.

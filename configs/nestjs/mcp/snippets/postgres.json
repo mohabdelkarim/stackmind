@@ -1,0 +1,13 @@
+{
+  "name": "postgres",
+  "description": "PostgreSQL for NestJS + Prisma apps.",
+  "config": {
+    "command": "npx",
+    "args": [
+      "@modelcontextprotocol/server-postgres@0.6.2"
+    ],
+    "env": {
+      "POSTGRES_DSN": "${DATABASE_URL}"
+    }
+  }
+}
