@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/mohabdelkarim/stackmind/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a2e24?style=flat-square&labelColor=0e1411" alt="MIT" /></a>
-  <a href="https://github.com/mohabdelkarim/stackmind/releases"><img src="https://img.shields.io/badge/version-1.3.0-6dffb0?style=flat-square&labelColor=0e1411" alt="version" /></a>
+  <a href="https://github.com/mohabdelkarim/stackmind/releases"><img src="https://img.shields.io/badge/version-1.4.0-6dffb0?style=flat-square&labelColor=0e1411" alt="version" /></a>
   <a href="#two-commands"><img src="https://img.shields.io/badge/setup-~2_min-e8f0ea?style=flat-square&labelColor=0e1411" alt="setup" /></a>
   <a href="#stacks"><img src="https://img.shields.io/badge/stacks-4_free-9bb0a2?style=flat-square&labelColor=0e1411" alt="stacks" /></a>
 </p>
@@ -37,6 +37,10 @@ One command. Free. MIT. No upsell.
 # pick a stack
 npx github:mohabdelkarim/stackmind init nextjs
 # or: python | nestjs | vue_nuxt
+
+# preview changes, then upgrade later
+npx github:mohabdelkarim/stackmind init nextjs --diff --dry-run
+npx github:mohabdelkarim/stackmind upgrade nextjs .
 
 # sanity check
 npx github:mohabdelkarim/stackmind doctor .
@@ -77,8 +81,9 @@ What lands in your repo:
 |------|-----|
 | `AGENTS.md` | Canonical rules for every agent |
 | `.claude/CLAUDE.md` | Short Claude Code manual |
-| `.cursor/rules/*.mdc` | Glob scoped Cursor overlays |
+| `.cursor/rules/*.mdc` | Glob scoped Cursor overlays (api, db, security, tests where present) |
 | `.cursor/mcp.json` | Merged, version pinned MCP servers |
+| `stackmind_recipes/` | Ready snippets (health route, env, migrations) |
 
 ---
 
@@ -94,6 +99,9 @@ Live sample apps ship in the repo and get smoke tested:
 | [`examples/vue_nuxt_live`](examples/vue_nuxt_live) | structure smoke |
 
 ```bash
+npm run validate
+npm run eval
+npm run cli_smoke
 npm run demo_proof
 npm run live_smoke
 ```
@@ -119,7 +127,8 @@ npm run validate
 ```bash
 stackmind list
 stackmind doctor [dir]
-stackmind init <stack> [dir] [--force] [--dry-run] [--no-mcp] [--mcp-only]
+stackmind init <stack> [dir] [--force] [--dry-run] [--diff] [--no-mcp] [--mcp-only]
+stackmind upgrade <stack> [dir] [--force] [--dry-run] [--diff]
 ```
 
 ---

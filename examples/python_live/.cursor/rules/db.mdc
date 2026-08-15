@@ -1,0 +1,16 @@
+---
+description: "SQLAlchemy models and Alembic migrations."
+globs:
+  - "app/models/**/*.py"
+  - "alembic/**/*.py"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+When changing persistence:
+
+- Use async SQLAlchemy 2.x; never block the event loop.
+- Add or update Alembic migrations when models change.
+- Review auto-generated migration diffs before applying.
+- Keep connection and session setup in `app/core/`.

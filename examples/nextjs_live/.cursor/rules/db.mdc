@@ -1,0 +1,18 @@
+---
+description: "Prisma and database conventions for Next.js."
+globs:
+  - "prisma/**/*"
+  - "lib/db.ts"
+  - "lib/db/**/*.ts"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+When touching the database layer:
+
+- Prefer Prisma typed queries over raw SQL.
+- Review migration SQL before applying.
+- Do not commit `.env` or connection strings.
+- Keep `lib/db.ts` as the single Prisma client entry point.
+- Update schema and migrations together; never leave models without a migration path.

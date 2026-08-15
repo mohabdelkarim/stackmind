@@ -1,0 +1,10 @@
+{
+  "id": "nextjs_rsc_default",
+  "stack": "nextjs",
+  "prompt": "Should a new page.tsx be a Client Component by default?",
+  "must_contain": [
+    "Server Components",
+    "use client",
+    "Anti-patterns"
+  ]
+}

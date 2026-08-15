@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/mohabdelkarim/stackmind/meta/kit_schema.json",
+  "title": "stackmind kit.json",
+  "type": "object",
+  "required": ["id", "label", "description", "files"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "Stack id used by the CLI (underscores only)."
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "files": {
+      "type": "object",
+      "required": ["agents", "claude", "setup", "mcp"],
+      "additionalProperties": false,
+      "properties": {
+        "agents": { "type": "string", "minLength": 1 },
+        "claude": { "type": "string", "minLength": 1 },
+        "setup": { "type": "string", "minLength": 1 },
+        "mcp": { "type": "string", "minLength": 1 }
+      }
+    },
+    "rules_glob": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mcp_packages": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

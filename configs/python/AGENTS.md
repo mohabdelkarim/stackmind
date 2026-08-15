@@ -50,3 +50,15 @@ Battle-tested against `examples/python_live` (thin `app/api`, logic in `app/serv
 - Explicitness over magic.
 - Show full file paths (example: `app/api/health.py`).
 - Smoke test with `pytest` in `examples/python_live` style.
+
+## Anti-patterns
+
+- Do not put domain logic in `app/api/` routers; use `app/services/`.
+- Do not block the event loop with sync I/O in async routes.
+- Do not hardcode secrets; use Pydantic Settings from the environment.
+- Do not change models without an Alembic migration when persistence is used.
+- Do not skip type hints under `app/`.
+
+## Recipes
+
+Snippet recipes ship under `stackmind_recipes/` after `stackmind init` (health endpoint, settings, Alembic note).

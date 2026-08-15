@@ -1,0 +1,15 @@
+---
+description: "API routers for FastAPI."
+globs:
+  - "app/api/**/*.py"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+When editing routers:
+
+- Keep FastAPI routers thin; put domain logic in `app/services/`.
+- Use Pydantic v2 models for request and response bodies.
+- Prefer dependency injection for db/session and settings.
+- Do not put business rules inline in route functions.

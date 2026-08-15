@@ -1,0 +1,9 @@
+{
+  "id": "nestjs_thin_controllers",
+  "stack": "nestjs",
+  "prompt": "Should Nest controllers contain business logic?",
+  "must_contain": [
+    "controllers thin",
+    "services"
+  ]
+}

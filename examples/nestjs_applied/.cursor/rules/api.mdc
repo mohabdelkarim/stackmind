@@ -1,0 +1,14 @@
+---
+description: "NestJS HTTP controllers and DTOs."
+globs:
+  - "**/*.controller.ts"
+  - "**/*.dto.ts"
+  - "**/main.ts"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+- Keep controllers thin; put logic in services.
+- Validate input with Zod or class-validator consistently with the project.
+- Prefer typed DTO boundaries at the HTTP edge.

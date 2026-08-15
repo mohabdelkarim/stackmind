@@ -2,6 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createHash } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,23 +37,26 @@ function usage(exitCode = 0) {
     '  stackmind list',
     '  stackmind doctor [targetDir]',
     '  stackmind init <stack> [targetDir] [options]',
+    '  stackmind upgrade <stack> [targetDir] [options]',
     '',
     'Stacks:',
     ...Object.values(stacks).map(
       (s) => `  ${(s.id || '').padEnd(10)} ${s.label} - ${s.description}`,
     ),
     '',
-    'Options for init:',
-    '  --force       Overwrite existing files',
+    'Options for init / upgrade:',
+    '  --force       Overwrite existing files (upgrade: also overwrite local edits)',
     '  --dry-run     Show what would be written',
+    '  --diff        Show unified diffs for files that would change',
     '  --no-mcp      Skip MCP config install',
     '  --mcp-only    Install only MCP config',
     '  -h, --help    Show help',
     '',
     'Examples:',
     '  npx github:mohabdelkarim/stackmind init nextjs',
+    '  stackmind init python ./my_api --diff',
+    '  stackmind upgrade nextjs . --force',
     '  stackmind doctor .',
-    '  stackmind init python ./my_api --force',
   ];
   console.log(lines.join('\n'));
   process.exit(exitCode);
@@ -77,27 +81,85 @@ function ensureDir(dir, dryRun) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
-function copyFile(src, dest, { force, dryRun }) {
-  if (fs.existsSync(dest) && !force) {
-    return { status: 'skip', dest };
-  }
-  if (dryRun) {
-    return { status: fs.existsSync(dest) ? 'overwrite' : 'write', dest };
-  }
-  ensureDir(path.dirname(dest), false);
-  fs.copyFileSync(src, dest);
-  return { status: force ? 'overwrite' : 'write', dest };
+function sha256(content) {
+  return createHash('sha256').update(content).digest('hex');
 }
 
-function mergeMcpConfig(srcPath, destPath, { force, dryRun }) {
-  const incoming = JSON.parse(fs.readFileSync(srcPath, 'utf8'));
+function readText(filePath) {
+  return fs.readFileSync(filePath, 'utf8');
+}
+
+function unifiedDiff(rel, before, after) {
+  const a = before == null ? [] : before.replace(/\r\n/g, '\n').split('\n');
+  const b = after.replace(/\r\n/g, '\n').split('\n');
+  const lines = [`--- a/${rel}`, `+++ b/${rel}`];
+  const max = Math.max(a.length, b.length);
+  let hunk = [];
+  let start = 1;
+  for (let i = 0; i < max; i += 1) {
+    const left = a[i];
+    const right = b[i];
+    if (left === right) {
+      if (hunk.length) {
+        lines.push(`@@ -${start},0 +${start},0 @@`);
+        lines.push(...hunk);
+        hunk = [];
+      }
+      continue;
+    }
+    if (hunk.length === 0) start = i + 1;
+    if (left !== undefined) hunk.push(`-${left}`);
+    if (right !== undefined) hunk.push(`+${right}`);
+  }
+  if (hunk.length) {
+    lines.push(`@@ -${start},0 +${start},0 @@`);
+    lines.push(...hunk);
+  }
+  if (lines.length === 2) {
+    lines.push('@@ (no textual diff; binary or identical encoding) @@');
+  }
+  return lines.join('\n');
+}
+
+function planCopy(src, destRel, destAbs) {
+  const incoming = readText(src);
+  if (!fs.existsSync(destAbs)) {
+    return {
+      kind: 'file',
+      src,
+      dest: destAbs,
+      destRel,
+      status: 'write',
+      incoming,
+      existing: null,
+      same: false,
+    };
+  }
+  const existing = readText(destAbs);
+  const same = sha256(existing) === sha256(incoming);
+  return {
+    kind: 'file',
+    src,
+    dest: destAbs,
+    destRel,
+    status: same ? 'unchanged' : 'overwrite',
+    incoming,
+    existing,
+    same,
+  };
+}
+
+function planMcpMerge(srcPath, destAbs, destRel, { force }) {
+  const incoming = JSON.parse(readText(srcPath));
   if (!incoming.mcpServers || typeof incoming.mcpServers !== 'object') {
     throw new Error(`Invalid MCP config: ${srcPath}`);
   }
 
   let existing = { mcpServers: {} };
-  if (fs.existsSync(destPath)) {
-    existing = JSON.parse(fs.readFileSync(destPath, 'utf8'));
+  let existingRaw = null;
+  if (fs.existsSync(destAbs)) {
+    existingRaw = readText(destAbs);
+    existing = JSON.parse(existingRaw);
     if (!existing.mcpServers || typeof existing.mcpServers !== 'object') {
       existing = { mcpServers: {} };
     }
@@ -113,13 +175,137 @@ function mergeMcpConfig(srcPath, destPath, { force, dryRun }) {
     merged.mcpServers[name] = server;
   }
 
-  if (dryRun) {
-    return { status: fs.existsSync(destPath) ? 'merge' : 'write', dest: destPath };
+  const out = `${JSON.stringify(merged, null, 2)}\n`;
+  const same = existingRaw != null && sha256(existingRaw) === sha256(out);
+  return {
+    kind: 'mcp',
+    src: srcPath,
+    dest: destAbs,
+    destRel,
+    status: existingRaw == null ? 'write' : same ? 'unchanged' : 'merge',
+    incoming: out,
+    existing: existingRaw,
+    same,
+  };
+}
+
+function collectPlans(kit, target, options) {
+  const plans = [];
+  const agentsRel = kit.files?.agents || 'AGENTS.md';
+  const claudeRel = kit.files?.claude || '.claude/CLAUDE.md';
+  const mcpRel = kit.files?.mcp || 'mcp/mcp_config.json';
+
+  if (!options.mcpOnly) {
+    plans.push(
+      planCopy(
+        path.join(kit.root, agentsRel),
+        'AGENTS.md',
+        path.join(target, 'AGENTS.md'),
+      ),
+    );
+
+    const claudeSrc = path.join(kit.root, claudeRel);
+    if (fs.existsSync(claudeSrc)) {
+      plans.push(
+        planCopy(claudeSrc, path.join('.claude', 'CLAUDE.md'), path.join(target, '.claude', 'CLAUDE.md')),
+      );
+    }
+
+    const rulesDir = path.join(kit.root, '.cursor', 'rules');
+    if (fs.existsSync(rulesDir)) {
+      for (const name of fs.readdirSync(rulesDir)) {
+        if (!name.endsWith('.mdc')) continue;
+        plans.push(
+          planCopy(
+            path.join(rulesDir, name),
+            path.join('.cursor', 'rules', name),
+            path.join(target, '.cursor', 'rules', name),
+          ),
+        );
+      }
+    }
+
+    const recipesDir = path.join(kit.root, 'recipes');
+    if (fs.existsSync(recipesDir)) {
+      for (const name of fs.readdirSync(recipesDir)) {
+        if (!name.endsWith('.md')) continue;
+        plans.push(
+          planCopy(
+            path.join(recipesDir, name),
+            path.join('stackmind_recipes', name),
+            path.join(target, 'stackmind_recipes', name),
+          ),
+        );
+      }
+    }
   }
 
-  ensureDir(path.dirname(destPath), false);
-  fs.writeFileSync(destPath, `${JSON.stringify(merged, null, 2)}\n`, 'utf8');
-  return { status: 'merge', dest: destPath };
+  if (!options.noMcp) {
+    const mcpSrc = path.join(kit.root, mcpRel);
+    if (fs.existsSync(mcpSrc)) {
+      plans.push(
+        planMcpMerge(mcpSrc, path.join(target, '.cursor', 'mcp.json'), path.join('.cursor', 'mcp.json'), options),
+      );
+      plans.push(
+        planCopy(mcpSrc, 'stackmind.mcp.json', path.join(target, 'stackmind.mcp.json')),
+      );
+    }
+  }
+
+  return plans;
+}
+
+function applyPlan(plan, options) {
+  if (plan.status === 'unchanged') {
+    return { status: 'unchanged', dest: plan.dest };
+  }
+
+  if (plan.kind === 'file') {
+    if (fs.existsSync(plan.dest) && !options.force && plan.status === 'overwrite') {
+      return { status: 'skip', dest: plan.dest };
+    }
+    if (options.dryRun) {
+      return {
+        status: fs.existsSync(plan.dest) ? 'overwrite' : 'write',
+        dest: plan.dest,
+      };
+    }
+    ensureDir(path.dirname(plan.dest), false);
+    fs.copyFileSync(plan.src, plan.dest);
+    return {
+      status: plan.existing != null ? 'overwrite' : 'write',
+      dest: plan.dest,
+    };
+  }
+
+  if (plan.kind === 'mcp') {
+    if (options.dryRun) {
+      return {
+        status: fs.existsSync(plan.dest) ? 'merge' : 'write',
+        dest: plan.dest,
+      };
+    }
+    ensureDir(path.dirname(plan.dest), false);
+    fs.writeFileSync(plan.dest, plan.incoming, 'utf8');
+    return { status: 'merge', dest: plan.dest };
+  }
+
+  throw new Error(`Unknown plan kind: ${plan.kind}`);
+}
+
+function printDiffs(plans, target) {
+  let shown = 0;
+  for (const plan of plans) {
+    if (plan.same) continue;
+    if (plan.status === 'unchanged') continue;
+    const rel = plan.destRel || path.relative(target, plan.dest);
+    console.log(unifiedDiff(rel.replace(/\\/g, '/'), plan.existing, plan.incoming));
+    console.log('');
+    shown += 1;
+  }
+  if (shown === 0) {
+    console.log('[stackmind] no content differences');
+  }
 }
 
 function listStacks() {
@@ -196,6 +382,7 @@ function doctor(targetDir) {
       '.claude/CLAUDE.md',
       '.cursor/mcp.json',
       'stackmind.mcp.json',
+      'stackmind_recipes',
     ];
     for (const rel of markers) {
       const p = path.join(target, rel);
@@ -218,7 +405,7 @@ function doctor(targetDir) {
   console.log('\n[stackmind] doctor passed');
 }
 
-function initStack(stackId, targetDir, options) {
+function runInstall(stackId, targetDir, options, mode) {
   const stacks = discoverStacks();
   const kit = stacks[stackId];
   if (!kit) {
@@ -231,58 +418,52 @@ function initStack(stackId, targetDir, options) {
     ensureDir(target, false);
   }
 
-  const results = [];
-  const agentsRel = kit.files?.agents || 'AGENTS.md';
-  const claudeRel = kit.files?.claude || '.claude/CLAUDE.md';
-  const mcpRel = kit.files?.mcp || 'mcp/mcp_config.json';
+  const plans = collectPlans(kit, target, options);
 
-  if (!options.mcpOnly) {
-    results.push(
-      copyFile(path.join(kit.root, agentsRel), path.join(target, 'AGENTS.md'), options),
-    );
-
-    const claudeSrc = path.join(kit.root, claudeRel);
-    if (fs.existsSync(claudeSrc)) {
-      results.push(
-        copyFile(claudeSrc, path.join(target, '.claude', 'CLAUDE.md'), options),
-      );
-    }
-
-    const rulesDir = path.join(kit.root, '.cursor', 'rules');
-    if (fs.existsSync(rulesDir)) {
-      for (const name of fs.readdirSync(rulesDir)) {
-        if (!name.endsWith('.mdc')) continue;
-        results.push(
-          copyFile(
-            path.join(rulesDir, name),
-            path.join(target, '.cursor', 'rules', name),
-            options,
-          ),
-        );
-      }
-    }
+  if (options.diff) {
+    console.log(`[stackmind] diff ${kit.label} -> ${target}\n`);
+    printDiffs(plans, target);
   }
 
-  if (!options.noMcp) {
-    const mcpSrc = path.join(kit.root, mcpRel);
-    if (fs.existsSync(mcpSrc)) {
-      results.push(
-        mergeMcpConfig(mcpSrc, path.join(target, '.cursor', 'mcp.json'), options),
-      );
-      results.push(
-        copyFile(mcpSrc, path.join(target, 'stackmind.mcp.json'), options),
-      );
+  if (mode === 'upgrade') {
+    const diverged = plans.filter(
+      (p) => p.kind === 'file' && p.existing != null && !p.same && !options.force,
+    );
+    for (const plan of plans) {
+      if (plan.kind === 'file' && plan.existing != null && !plan.same && !options.force) {
+        console.log(`  [diverged] ${plan.destRel} (local edits kept; use --force to overwrite)`);
+        continue;
+      }
+      if (plan.same) {
+        console.log(`  [unchanged] ${plan.destRel}`);
+        continue;
+      }
+      const result = applyPlan(plan, { ...options, force: true });
+      console.log(`  [${result.status}] ${plan.destRel}`);
     }
+    if (diverged.length > 0 && !options.force) {
+      console.log(
+        `\n[stackmind] upgrade left ${diverged.length} local edit(s) untouched. Re-run with --force to overwrite.`,
+      );
+    } else if (!options.dryRun) {
+      console.log(`\n[stackmind] upgraded ${kit.label} -> ${target}`);
+    }
+    return;
   }
 
   const label = options.dryRun ? 'Dry run' : 'Installed';
   console.log(`[stackmind] ${label} ${kit.label} -> ${target}\n`);
-  for (const result of results) {
-    const rel = path.relative(target, result.dest) || result.dest;
-    console.log(`  [${result.status}] ${rel}`);
+
+  for (const plan of plans) {
+    if (plan.same && fs.existsSync(plan.dest)) {
+      console.log(`  [unchanged] ${plan.destRel}`);
+      continue;
+    }
+    const result = applyPlan(plan, options);
+    console.log(`  [${result.status}] ${plan.destRel}`);
   }
 
-  if (!options.dryRun) {
+  if (!options.dryRun && !options.diff) {
     const setup = path.join(kit.root, kit.files?.setup || 'SETUP_GUIDE.md');
     console.log('\nNext:');
     console.log(`  1. Read ${setup}`);
@@ -300,6 +481,13 @@ function main() {
   }
 
   const command = positional[0];
+  const commonOptions = {
+    force: flags.has('force'),
+    dryRun: flags.has('dry-run'),
+    diff: flags.has('diff'),
+    noMcp: flags.has('no-mcp'),
+    mcpOnly: flags.has('mcp-only'),
+  };
 
   if (command === 'list') {
     listStacks();
@@ -311,19 +499,14 @@ function main() {
     return;
   }
 
-  if (command === 'init') {
+  if (command === 'init' || command === 'upgrade') {
     const stackId = positional[1];
     if (!stackId) {
-      console.error('[stackmind] Missing stack. Example: stackmind init nextjs');
+      console.error(`[stackmind] Missing stack. Example: stackmind ${command} nextjs`);
       process.exit(1);
     }
     const targetDir = positional[2] || process.cwd();
-    initStack(stackId, targetDir, {
-      force: flags.has('force'),
-      dryRun: flags.has('dry-run'),
-      noMcp: flags.has('no-mcp'),
-      mcpOnly: flags.has('mcp-only'),
-    });
+    runInstall(stackId, targetDir, commonOptions, command);
     return;
   }
 

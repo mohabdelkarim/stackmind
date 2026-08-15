@@ -1,0 +1,19 @@
+---
+description: "API routes and Server Actions for Next.js."
+globs:
+  - "app/api/**/*.ts"
+  - "app/api/**/*.tsx"
+  - "**/actions.ts"
+  - "**/actions/*.ts"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+When editing API or Server Actions:
+
+- Keep handlers thin; move reusable logic to `lib/`.
+- Validate body/query with Zod before use.
+- Return typed JSON; prefer early returns for error paths.
+- Never hardcode secrets; use validated env from `lib/env.ts`.
+- Prefer Server Actions for form mutations when the UI is in the same app.

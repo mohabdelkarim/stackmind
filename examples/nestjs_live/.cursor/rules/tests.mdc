@@ -1,0 +1,13 @@
+---
+description: "NestJS tests and smoke checks."
+globs:
+  - "**/*.spec.ts"
+  - "scripts/smoke.*"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+- Prefer unit tests for services; use e2e sparingly.
+- Keep smoke scripts deterministic for CI.
+- Do not skip failing tests to greenwash CI.

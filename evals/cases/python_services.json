@@ -1,0 +1,10 @@
+{
+  "id": "python_thin_routers",
+  "stack": "python",
+  "prompt": "Where should FastAPI domain logic live?",
+  "must_contain": [
+    "app/services",
+    "thin",
+    "Anti-patterns"
+  ]
+}

@@ -1,0 +1,18 @@
+---
+description: "Tests and smoke checks for Next.js."
+globs:
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "scripts/smoke.*"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+When adding or changing tests:
+
+- Cover health routes and critical auth/data paths.
+- Prefer deterministic unit/smoke tests over flaky e2e for CI defaults.
+- Match patterns used in `examples/nextjs_live` when present.
+- Do not skip failing tests to greenwash CI.

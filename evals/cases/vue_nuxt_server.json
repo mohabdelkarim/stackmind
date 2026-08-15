@@ -1,0 +1,9 @@
+{
+  "id": "vue_nuxt_server_thin",
+  "stack": "vue_nuxt",
+  "prompt": "Where should shared Nuxt server logic live?",
+  "must_contain": [
+    "server handlers thin",
+    "server/utils"
+  ]
+}

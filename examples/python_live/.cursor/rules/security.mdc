@@ -1,0 +1,16 @@
+---
+description: "Security and settings for FastAPI."
+globs:
+  - "app/core/**/*.py"
+  - "app/api/**/*.py"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+Security checklist:
+
+- Load secrets from environment via Pydantic Settings; never hardcode.
+- Do not commit `.env` or production credentials.
+- Validate all external payloads with Pydantic v2.
+- Prefer explicit auth dependencies over ad hoc checks in handlers.

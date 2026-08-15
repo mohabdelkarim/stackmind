@@ -1,0 +1,19 @@
+---
+description: "Security and secrets hygiene for Next.js apps."
+globs:
+  - "lib/env.ts"
+  - "lib/auth/**/*.ts"
+  - "app/api/**/*.ts"
+  - "**/.env*"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+Security checklist:
+
+- Validate all external input with Zod.
+- Never invent or commit secrets; use `.env.local` and deployment secrets.
+- Prefer server-only modules for tokens and database clients.
+- Avoid leaking stack traces or secrets in client responses.
+- Do not disable auth checks to "just make it work".

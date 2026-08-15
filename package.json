@@ -1,6 +1,6 @@
 {
   "name": "stackmind",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Install AI coding configs for Cursor, Claude Code, and other agents by stack",
   "type": "module",
   "bin": {
@@ -28,6 +28,10 @@
     "doctor": "node bin/stackmind.js doctor",
     "demo_proof": "node scripts/demo_proof.js",
     "live_smoke": "node scripts/live_smoke.js",
+    "cli_smoke": "node scripts/cli_smoke.js",
+    "eval": "node evals/run.js",
+    "test": "npm run validate && npm run doctor && npm run cli_smoke && npm run eval && npm run demo_proof",
+    "prepublishOnly": "npm run validate && npm run doctor && npm run cli_smoke && npm run eval",
     "examples": "node bin/stackmind.js init nextjs ./examples/nextjs_applied --force && node bin/stackmind.js init python ./examples/python_applied --force && node bin/stackmind.js init nestjs ./examples/nestjs_applied --force && node bin/stackmind.js init vue_nuxt ./examples/vue_nuxt_applied --force"
   },
   "keywords": [
@@ -51,5 +55,8 @@
   },
   "homepage": "https://github.com/mohabdelkarim/stackmind#readme",
   "license": "MIT",
-  "author": "MOHAbdelkarim"
+  "author": "MOHAbdelkarim <mohaabdelkarim2@gmail.com>",
+  "publishConfig": {
+    "access": "public"
+  }
 }

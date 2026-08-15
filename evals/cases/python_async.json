@@ -1,0 +1,10 @@
+{
+  "id": "python_async_db",
+  "stack": "python",
+  "prompt": "How should database access work in async routes?",
+  "must_contain": [
+    "async SQLAlchemy",
+    "event loop",
+    "Alembic"
+  ]
+}

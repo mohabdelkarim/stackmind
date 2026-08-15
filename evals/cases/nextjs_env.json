@@ -1,0 +1,10 @@
+{
+  "id": "nextjs_env_zod",
+  "stack": "nextjs",
+  "prompt": "How should env vars be validated?",
+  "must_contain": [
+    "Zod",
+    "lib/env.ts",
+    "Never invent secrets"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "python_pytest",
+  "stack": "python",
+  "prompt": "How should API tests be written?",
+  "must_contain": [
+    "pytest-asyncio",
+    "httpx.AsyncClient",
+    "ASGITransport"
+  ]
+}

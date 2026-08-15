@@ -1,0 +1,10 @@
+{
+  "id": "nextjs_api_thin",
+  "stack": "nextjs",
+  "prompt": "Where does business logic go for an API route?",
+  "must_contain": [
+    "Keep handlers thin",
+    "lib/",
+    "app/api"
+  ]
+}

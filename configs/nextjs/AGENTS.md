@@ -54,3 +54,15 @@ Battle-tested against `examples/nextjs_live` (Server Components, `lib/env.ts`, `
 - Show full file paths when editing (example: `app/api/health/route.ts`).
 - Call out required env vars when changing config or auth.
 - Every meaningful change should be smoke tested (`examples/nextjs_live` pattern).
+
+## Anti-patterns
+
+- Do not mark every component `"use client"` by default.
+- Do not put business logic in `page.tsx` or route handlers; use `lib/`.
+- Do not use `process.env.X!` without Zod validation in `lib/env.ts`.
+- Do not commit secrets, `.env.local`, or raw connection strings.
+- Do not skip migrations after Prisma schema changes.
+
+## Recipes
+
+Snippet recipes ship under `stackmind_recipes/` after `stackmind init` (health route, Zod env, Prisma client).

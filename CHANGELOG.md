@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2026-08-15
+
+### Added
+- CI workflow: validate, doctor, cli_smoke, eval, demo_proof, live_smoke
+- `meta/kit_schema.json` and kit.json schema checks in `npm run validate`
+- `stackmind upgrade` (keeps local edits unless `--force`)
+- `stackmind init --diff` / `upgrade --diff`
+- Deterministic eval harness under `evals/`
+- Scoped Cursor rules: api, db, security, tests (per stack depth)
+- `recipes/` installed to `stackmind_recipes/` on init
+- `npm run cli_smoke`, `npm run eval`, `npm test`, npm publish packaging (`publishConfig`)
+
+### Changed
+- Next.js and Python `AGENTS.md` anti-pattern blocks
+- Version bump to 1.4.0
+
 ## [1.3.0] - 2026-08-15
 
 ### Added

@@ -1,0 +1,14 @@
+---
+description: "Vue/Nuxt tests and smoke checks."
+globs:
+  - "**/*.spec.ts"
+  - "**/*.test.ts"
+  - "scripts/smoke.*"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+- Prefer deterministic smoke scripts for CI.
+- Cover critical page and API paths when present.
+- Do not skip failing tests to greenwash CI.

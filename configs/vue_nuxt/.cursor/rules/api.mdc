@@ -1,0 +1,13 @@
+---
+description: "Nuxt server routes and API handlers."
+globs:
+  - "server/**/*.ts"
+  - "server/api/**/*"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+- Keep server handlers thin; put shared logic in `server/utils` or `lib/`.
+- Validate external input before use.
+- Prefer typed composables and clear file path callouts when editing.

@@ -1,0 +1,15 @@
+---
+description: "pytest conventions for FastAPI."
+globs:
+  - "tests/**/*.py"
+alwaysApply: false
+---
+
+Follow root `AGENTS.md`.
+
+When writing tests:
+
+- Use pytest and pytest-asyncio.
+- Prefer `httpx.AsyncClient` with ASGITransport for API tests.
+- Cover health and critical auth/data paths.
+- Keep fixtures in `conftest.py`; avoid shared mutable global state.
