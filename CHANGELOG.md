@@ -1,5 +1,9 @@
 # Changelog
 
+[auto] - 2026-08-21
+Updated
+- @supabase/mcp-server-supabase: 0.10.0 -> 0.11.0
+
 All notable changes to this project will be documented in this file.
 
 ## [1.4.0] - 2026-08-15
