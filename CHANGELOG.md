@@ -1,5 +1,10 @@
 # Changelog
 
+[auto] - 2026-09-01
+Updated
+- @modelcontextprotocol/server-filesystem: 2026.7.10 -> 2026.8.31
+- @modelcontextprotocol/server-memory: 2026.7.4 -> 2026.8.31
+
 [auto] - 2026-08-21
 Updated
 - @supabase/mcp-server-supabase: 0.10.0 -> 0.11.0
