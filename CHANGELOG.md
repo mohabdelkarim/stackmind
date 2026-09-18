@@ -1,5 +1,9 @@
 # Changelog
 
+[auto] - 2026-09-18
+Updated
+- @supabase/mcp-server-supabase: 0.12.0 -> 0.13.0
+
 [auto] - 2026-09-07
 Updated
 - @supabase/mcp-server-supabase: 0.11.0 -> 0.12.0
