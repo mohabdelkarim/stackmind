@@ -1,5 +1,9 @@
 # Changelog
 
+[auto] - 2026-09-21
+Updated
+- @notionhq/notion-mcp-server: 2.5.1 -> 2.5.2
+
 [auto] - 2026-09-18
 Updated
 - @supabase/mcp-server-supabase: 0.12.0 -> 0.13.0
