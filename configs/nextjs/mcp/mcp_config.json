@@ -30,7 +30,7 @@
     "filesystem": {
       "command": "npx",
       "args": [
-        "@modelcontextprotocol/server-filesystem@2026.8.31"
+        "@modelcontextprotocol/server-filesystem@1.0.0"
       ],
       "env": {
         "MCP_FS_ROOT": "${MCP_FS_ROOT}"
@@ -48,7 +48,7 @@
     "memory": {
       "command": "npx",
       "args": [
-        "@modelcontextprotocol/server-memory@2026.8.31"
+        "@modelcontextprotocol/server-memory@1.0.0"
       ]
     }
   }

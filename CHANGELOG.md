@@ -1,5 +1,10 @@
 # Changelog
 
+[auto] - 2026-10-12
+Updated
+- @modelcontextprotocol/server-filesystem: 2026.8.31 -> 1.0.0
+- @modelcontextprotocol/server-memory: 2026.8.31 -> 1.0.0
+
 [auto] - 2026-09-21
 Updated
 - @notionhq/notion-mcp-server: 2.5.1 -> 2.5.2
