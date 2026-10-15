@@ -1,5 +1,9 @@
 # Changelog
 
+[auto] - 2026-10-15
+Updated
+- @supabase/mcp-server-supabase: 0.13.0 -> 0.14.0
+
 [auto] - 2026-10-12
 Updated
 - @modelcontextprotocol/server-filesystem: 2026.8.31 -> 1.0.0
