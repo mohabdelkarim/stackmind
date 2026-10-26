@@ -1,5 +1,9 @@
 # Changelog
 
+[auto] - 2026-10-26
+Updated
+- @modelcontextprotocol/server-filesystem: 2.0.0 -> 2.0.1
+
 [auto] - 2026-10-19
 Updated
 - @modelcontextprotocol/server-filesystem: 1.0.0 -> 2.0.0
