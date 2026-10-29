@@ -4,7 +4,7 @@
   "config": {
     "command": "npx",
     "args": [
-      "@modelcontextprotocol/server-memory@2.0.0"
+      "@modelcontextprotocol/server-memory@2.0.1"
     ]
   }
 }

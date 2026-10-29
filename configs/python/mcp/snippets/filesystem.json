@@ -4,7 +4,7 @@
   "config": {
     "command": "npx",
     "args": [
-      "@modelcontextprotocol/server-filesystem@2.0.1"
+      "@modelcontextprotocol/server-filesystem@2.1.0"
     ],
     "env": {
       "MCP_FS_ROOT": "${MCP_FS_ROOT}"
