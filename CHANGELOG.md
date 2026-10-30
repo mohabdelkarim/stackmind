@@ -1,5 +1,9 @@
 # Changelog
 
+[auto] - 2026-10-30
+Updated
+- @notionhq/notion-mcp-server: 2.6.0 -> 2.6.1
+
 [auto] - 2026-10-29
 Updated
 - @modelcontextprotocol/server-filesystem: 2.0.1 -> 2.1.0
