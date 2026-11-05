@@ -1,5 +1,12 @@
 # Changelog
 
+[auto] - 2026-11-05
+Updated
+- @modelcontextprotocol/server-filesystem: 2.1.0 -> 2.2.0
+- @modelcontextprotocol/server-memory: 2.0.1 -> 2.1.0
+- @stripe/mcp: 0.3.3 -> 0.3.4
+- @supabase/mcp-server-supabase: 0.15.0 -> 0.16.0
+
 [auto] - 2026-10-30
 Updated
 - @notionhq/notion-mcp-server: 2.6.0 -> 2.6.1

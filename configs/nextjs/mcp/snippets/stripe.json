@@ -4,7 +4,7 @@
   "config": {
     "command": "npx",
     "args": [
-      "@stripe/mcp@0.3.3"
+      "@stripe/mcp@0.3.4"
     ],
     "env": {
       "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
