@@ -4,6 +4,7 @@ import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
+import { validateMcpServersShape } from './mcp_shape.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const cli = path.join(root, 'bin', 'stackmind.js');
@@ -48,6 +49,41 @@ if (!fs.existsSync(path.join(tmp, 'AGENTS.md'))) {
   console.error('[cli_smoke] AGENTS.md missing after init');
   process.exit(1);
 }
+
+const installedMcpPath = path.join(tmp, '.cursor', 'mcp.json');
+if (!fs.existsSync(installedMcpPath)) {
+  console.error('[cli_smoke] .cursor/mcp.json missing after init');
+  process.exit(1);
+}
+const installedMcp = JSON.parse(fs.readFileSync(installedMcpPath, 'utf8'));
+const shapeErrors = validateMcpServersShape(installedMcp, { fileLabel: installedMcpPath });
+if (shapeErrors.length) {
+  console.error('[cli_smoke] installed MCP shape invalid:');
+  for (const e of shapeErrors) console.error(`  ${e}`);
+  process.exit(1);
+}
+const postgresArgs = installedMcp.mcpServers?.postgres?.args || [];
+if (!postgresArgs.includes('${env:DATABASE_URL}')) {
+  console.error('[cli_smoke] postgres must receive ${env:DATABASE_URL} as a CLI arg');
+  process.exit(1);
+}
+if (!postgresArgs.includes('-y')) {
+  console.error('[cli_smoke] npx -y missing on postgres');
+  process.exit(1);
+}
+const githubEnv = installedMcp.mcpServers?.github?.env || {};
+if (!githubEnv.GITHUB_PERSONAL_ACCESS_TOKEN) {
+  console.error('[cli_smoke] github must use GITHUB_PERSONAL_ACCESS_TOKEN');
+  process.exit(1);
+}
+const fsArgs = installedMcp.mcpServers?.filesystem?.args || [];
+if (!fsArgs.includes('${workspaceFolder}')) {
+  console.error('[cli_smoke] filesystem must allow ${workspaceFolder}');
+  process.exit(1);
+}
+
+console.log('[cli_smoke] doctor on installed target');
+run(['doctor', tmp]);
 
 fs.writeFileSync(path.join(tmp, 'AGENTS.md'), '# local edit\n', 'utf8');
 console.log('[cli_smoke] upgrade without --force keeps local edit');

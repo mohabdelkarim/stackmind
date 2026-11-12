@@ -1,13 +1,15 @@
 {
   "name": "stripe",
-  "description": "Optional Stripe MCP for payments and subscriptions. Add to mcp config only when needed.",
+  "description": "Optional Stripe MCP. Use a restricted test key. Never commit live secrets.",
   "config": {
     "command": "npx",
     "args": [
-      "@stripe/mcp@0.3.4"
+      "-y",
+      "@stripe/mcp@0.3.4",
+      "--tools=all"
     ],
     "env": {
-      "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+      "STRIPE_SECRET_KEY": "${env:STRIPE_SECRET_KEY}"
     }
   }
 }

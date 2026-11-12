@@ -1,13 +1,12 @@
 {
   "name": "filesystem",
-  "description": "Local filesystem navigation and editing for the FastAPI project.",
+  "description": "Project-scoped filesystem tools. Allowed root is ${workspaceFolder}.",
   "config": {
     "command": "npx",
     "args": [
-      "@modelcontextprotocol/server-filesystem@2.3.0"
-    ],
-    "env": {
-      "MCP_FS_ROOT": "${MCP_FS_ROOT}"
-    }
+      "-y",
+      "@modelcontextprotocol/server-filesystem@2026.8.31",
+      "${workspaceFolder}"
+    ]
   }
 }

@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { validateMcpServersShape, validateMcpSnippetShape } from '../../scripts/mcp_shape.js';
+import { selfCheck as versionCompareSelfCheck } from '../../scripts/version_compare.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,24 +45,13 @@ function collectCommentKeys(obj, pathSegments = []) {
 }
 
 function validateMcpConfig(filePath, json) {
-  const errors = [];
+  const rel = path.relative(repoRoot, filePath);
+  return validateMcpServersShape(json, { fileLabel: rel });
+}
 
-  if (!json.mcpServers || typeof json.mcpServers !== 'object') {
-    errors.push('Missing mcpServers key');
-    return errors;
-  }
-
-  for (const [name, server] of Object.entries(json.mcpServers)) {
-    if (!server || typeof server !== 'object') {
-      errors.push(`Server ${name} is not an object`);
-      continue;
-    }
-    if (!server.command) {
-      errors.push(`Server ${name} is missing command`);
-    }
-  }
-
-  return errors;
+function validateMcpSnippet(filePath, json) {
+  const rel = path.relative(repoRoot, filePath);
+  return validateMcpSnippetShape(json, { fileLabel: rel });
 }
 
 function isNonEmptyString(value) {
@@ -190,6 +181,13 @@ function writeOutputs({ passed, errorDetails }) {
 function main() {
   const errors = [];
 
+  const compareFailures = versionCompareSelfCheck();
+  for (const line of compareFailures) {
+    const msg = `[validator] version_compare self-check: ${line}`;
+    console.error(msg);
+    errors.push(msg);
+  }
+
   let kitSchema;
   try {
     kitSchema = JSON.parse(fs.readFileSync(kitSchemaPath, 'utf8'));
@@ -229,7 +227,18 @@ function main() {
     if (path.basename(file) === 'mcp_config.json') {
       const mcpErrors = validateMcpConfig(file, json);
       for (const e of mcpErrors) {
-        const msg = `[validator] ${rel} - ${e}`;
+        const msg = `[validator] ${e}`;
+        console.error(msg);
+        errors.push(msg);
+      }
+    }
+
+    const underSnippets =
+      rel.replace(/\\/g, '/').includes('/mcp/snippets/') && path.basename(file).endsWith('.json');
+    if (underSnippets) {
+      const snippetErrors = validateMcpSnippet(file, json);
+      for (const e of snippetErrors) {
+        const msg = `[validator] ${e}`;
         console.error(msg);
         errors.push(msg);
       }

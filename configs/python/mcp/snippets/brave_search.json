@@ -1,13 +1,14 @@
 {
   "name": "brave-search",
-  "description": "Web search via Brave for research during coding sessions.",
+  "description": "Brave web and local search.",
   "config": {
     "command": "npx",
     "args": [
+      "-y",
       "@modelcontextprotocol/server-brave-search@0.6.2"
     ],
     "env": {
-      "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      "BRAVE_API_KEY": "${env:BRAVE_API_KEY}"
     }
   }
 }

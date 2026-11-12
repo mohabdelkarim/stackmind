@@ -1,13 +1,14 @@
 {
   "name": "notion",
-  "description": "Notion workspace access for product docs and specs.",
+  "description": "Local Notion MCP (self-hosted). Prefer Notion remote MCP when you can.",
   "config": {
     "command": "npx",
     "args": [
+      "-y",
       "@notionhq/notion-mcp-server@2.6.1"
     ],
     "env": {
-      "NOTION_TOKEN": "${NOTION_TOKEN}"
+      "NOTION_TOKEN": "${env:NOTION_TOKEN}"
     }
   }
 }

@@ -1,12 +1,20 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { isNewer, selfCheck } from '../../scripts/version_compare.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const versionsPath = path.resolve(__dirname, '../../meta/versions.json');
 
 async function main() {
+  const compareFailures = selfCheck();
+  if (compareFailures.length) {
+    console.error('[check_versions] version_compare self-check failed:');
+    for (const line of compareFailures) console.error(`  ${line}`);
+    process.exit(1);
+  }
+
   let meta;
   try {
     const raw = fs.readFileSync(versionsPath, 'utf8');
@@ -33,8 +41,13 @@ async function main() {
         console.warn(`[check_versions] No version field in npm response for ${name}`);
         continue;
       }
-      if (latest !== current) {
+      // Skip npm "latest" when it would downgrade calendar pins (e.g. 2026.8.31 -> 2.3.0).
+      if (isNewer(latest, current)) {
         changes[name] = { current, latest };
+      } else if (latest !== current) {
+        console.log(
+          `[check_versions] skip ${name}: npm latest ${latest} is not newer than pinned ${current}`,
+        );
       }
     } catch (err) {
       console.warn(`[check_versions] Error fetching ${name}:`, err?.message || err);

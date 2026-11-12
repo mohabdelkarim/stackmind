@@ -15,8 +15,6 @@
     "@modelcontextprotocol/server-filesystem",
     "@modelcontextprotocol/server-brave-search",
     "@notionhq/notion-mcp-server",
-    "@modelcontextprotocol/server-memory",
-    "@stripe/mcp",
-    "@supabase/mcp-server-supabase"
+    "@modelcontextprotocol/server-memory"
   ]
 }

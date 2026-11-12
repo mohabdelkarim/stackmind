@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/mohabdelkarim/stackmind/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a2e24?style=flat-square&labelColor=0e1411" alt="MIT" /></a>
-  <a href="https://github.com/mohabdelkarim/stackmind/releases"><img src="https://img.shields.io/badge/version-1.4.0-6dffb0?style=flat-square&labelColor=0e1411" alt="version" /></a>
+  <a href="https://github.com/mohabdelkarim/stackmind/releases"><img src="https://img.shields.io/badge/version-1.4.1-6dffb0?style=flat-square&labelColor=0e1411" alt="version" /></a>
   <a href="#two-commands"><img src="https://img.shields.io/badge/setup-~2_min-e8f0ea?style=flat-square&labelColor=0e1411" alt="setup" /></a>
   <a href="#stacks"><img src="https://img.shields.io/badge/stacks-4_free-9bb0a2?style=flat-square&labelColor=0e1411" alt="stacks" /></a>
 </p>

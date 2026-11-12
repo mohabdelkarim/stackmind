@@ -23,7 +23,7 @@ Or from a local clone of stackmind:
 node /path/to/stackmind/bin/stackmind.js init python /path/to/your-project
 ```
 
-Useful flags: `--force`, `--dry-run`, `--no-mcp`, `--mcp-only`.
+Useful flags: `--force`, `--dry-run`, `--diff`, `--no-mcp`, `--mcp-only`.
 
 Then run:
 
@@ -37,8 +37,9 @@ npx github:mohabdelkarim/stackmind doctor .
 |--------|-------------|
 | `AGENTS.md` | project root (canonical rules for all agents) |
 | `.claude/CLAUDE.md` | Claude Code project manual |
-| `.cursor/rules/python_fastapi.mdc` | Cursor glob-scoped overlay |
+| `.cursor/rules/*.mdc` | Cursor glob-scoped overlays |
 | `mcp/mcp_config.json` | `.cursor/mcp.json` (merged) + `stackmind.mcp.json` |
+| `recipes/*.md` | `stackmind_recipes/` |
 
 Legacy `.cursorrules` is not installed. Prefer `AGENTS.md` + `.cursor/rules/`.
 
@@ -54,15 +55,20 @@ Legacy `.cursorrules` is not installed. Prefer `AGENTS.md` + `.cursor/rules/`.
 2. Ask: "How should I structure a new FastAPI feature?"
 3. Expect mentions of `app/services/`, Alembic, and type hints.
 
-## Verify MCP
+## Verify MCP (Cursor)
 
-1. Set env vars as needed: `POSTGRES_DSN`, `GITHUB_TOKEN`, `BRAVE_API_KEY`, `MCP_FS_ROOT`.
-2. Restart Cursor / Claude Desktop.
-3. Confirm servers appear: postgres, github, filesystem, brave-search, memory.
+Set these in the environment Cursor inherits, then restart Cursor:
+
+| Variable | Used by |
+|----------|---------|
+| `DATABASE_URL` | postgres (CLI arg on the official server) |
+| `GITHUB_PERSONAL_ACCESS_TOKEN` | github |
+| `BRAVE_API_KEY` | brave-search |
+
+Filesystem is scoped to `${workspaceFolder}`. Never commit secrets.
 
 ## Customize
 
 - Edit `AGENTS.md` for team-wide conventions (single source of truth).
 - Keep `.cursor/rules/*.mdc` short and glob-scoped.
 - Keep `.claude/CLAUDE.md` for commands, key files, and env vars.
-- Mix MCP servers using `configs/python/mcp/snippets/`.

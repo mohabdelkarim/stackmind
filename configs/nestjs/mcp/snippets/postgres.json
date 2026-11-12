@@ -1,13 +1,12 @@
 {
   "name": "postgres",
-  "description": "PostgreSQL for NestJS + Prisma apps.",
+  "description": "Read-only PostgreSQL access. DSN is a CLI arg (not an env key on this server).",
   "config": {
     "command": "npx",
     "args": [
-      "@modelcontextprotocol/server-postgres@0.6.2"
-    ],
-    "env": {
-      "POSTGRES_DSN": "${DATABASE_URL}"
-    }
+      "-y",
+      "@modelcontextprotocol/server-postgres@0.6.2",
+      "${env:DATABASE_URL}"
+    ]
   }
 }

@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createHash } from 'crypto';
+import { validateMcpServersShape } from '../scripts/mcp_shape.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -384,12 +385,47 @@ function doctor(targetDir) {
       'stackmind.mcp.json',
       'stackmind_recipes',
     ];
+    const present = [];
     for (const rel of markers) {
       const p = path.join(target, rel);
       if (fs.existsSync(p)) {
+        present.push(rel);
         checks.push({ ok: true, msg: `found in target: ${rel}` });
       } else {
         checks.push({ ok: true, msg: `not installed yet: ${rel} (ok before init)` });
+      }
+    }
+
+    // If any kit file is present, require AGENTS.md + valid MCP shape when MCP was installed.
+    if (present.length > 0 && !present.includes('AGENTS.md')) {
+      checks.push({
+        ok: false,
+        msg: 'partial install: kit markers found but AGENTS.md is missing',
+      });
+      failed += 1;
+    }
+
+    const mcpPath = path.join(target, '.cursor', 'mcp.json');
+    if (fs.existsSync(mcpPath)) {
+      try {
+        const mcpJson = JSON.parse(fs.readFileSync(mcpPath, 'utf8'));
+        const shapeErrors = validateMcpServersShape(mcpJson, {
+          fileLabel: '.cursor/mcp.json',
+        });
+        if (shapeErrors.length === 0) {
+          checks.push({ ok: true, msg: '.cursor/mcp.json shape ok' });
+        } else {
+          for (const err of shapeErrors) {
+            checks.push({ ok: false, msg: err });
+            failed += 1;
+          }
+        }
+      } catch (err) {
+        checks.push({
+          ok: false,
+          msg: `.cursor/mcp.json is invalid JSON: ${err?.message || err}`,
+        });
+        failed += 1;
       }
     }
   }

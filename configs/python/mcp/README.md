@@ -1,14 +1,16 @@
 # Python / FastAPI MCP servers
 
-Pinned MCP servers for the FastAPI kit. Versions are tracked in `meta/versions.json` and updated by `npm run update`.
+Pinned MCP servers for the FastAPI kit. Versions live in `meta/versions.json`.
+
+Configs target **Cursor** `.cursor/mcp.json` interpolation (`${env:NAME}`, `${workspaceFolder}`).
 
 ## Servers
 
-| Server | Package | Env |
-|--------|---------|-----|
-| postgres | `@modelcontextprotocol/server-postgres` | `POSTGRES_DSN` |
-| github | `@modelcontextprotocol/server-github` | `GITHUB_TOKEN` |
-| filesystem | `@modelcontextprotocol/server-filesystem` | `MCP_FS_ROOT` |
+| Server | Package | How it is wired |
+|--------|---------|-----------------|
+| postgres | `@modelcontextprotocol/server-postgres` | DSN as **CLI arg** `${env:DATABASE_URL}` |
+| github | `@modelcontextprotocol/server-github` | `GITHUB_PERSONAL_ACCESS_TOKEN` |
+| filesystem | `@modelcontextprotocol/server-filesystem` | allowed dir `${workspaceFolder}` |
 | brave-search | `@modelcontextprotocol/server-brave-search` | `BRAVE_API_KEY` |
 | memory | `@modelcontextprotocol/server-memory` | (none) |
 
@@ -16,11 +18,12 @@ Pinned MCP servers for the FastAPI kit. Versions are tracked in `meta/versions.j
 
 `stackmind init python` merges these into `.cursor/mcp.json` and writes `stackmind.mcp.json`.
 
-For mix-and-match, copy individual files from `snippets/`.
+Mix-and-match from `snippets/` when needed.
 
 ## API keys
 
 - Brave: https://brave.com/search/api/
-- GitHub: classic or fine-grained PAT with repo scope as needed
+- GitHub: PAT with the scopes you need (`GITHUB_PERSONAL_ACCESS_TOKEN`)
+- Postgres: set `DATABASE_URL` in the environment Cursor inherits
 
-Never commit real keys. Use local env or your MCP client secret store.
+Never commit real keys.

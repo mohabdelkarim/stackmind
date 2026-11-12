@@ -4,6 +4,7 @@ import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
+import { validateMcpServersShape } from './mcp_shape.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
@@ -62,6 +63,16 @@ for (const [stack, rel] of liveTargets) {
   const target = path.join(root, rel);
   console.log(`[demo_proof] init ${stack} into live sample ${rel}`);
   run(['init', stack, target, '--force']);
+  const mcpPath = path.join(target, '.cursor', 'mcp.json');
+  mustExist(mcpPath);
+  const shapeErrors = validateMcpServersShape(JSON.parse(fs.readFileSync(mcpPath, 'utf8')), {
+    fileLabel: `${rel}/.cursor/mcp.json`,
+  });
+  if (shapeErrors.length) {
+    console.error(`[demo_proof] MCP shape failed for ${rel}`);
+    for (const e of shapeErrors) console.error(`  ${e}`);
+    process.exit(1);
+  }
 }
 
 runNode(path.join(root, 'examples/nestjs_live/scripts/smoke.mjs'), path.join(root, 'examples/nestjs_live'));

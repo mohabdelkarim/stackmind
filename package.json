@@ -1,6 +1,6 @@
 {
   "name": "stackmind",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Install AI coding configs for Cursor, Claude Code, and other agents by stack",
   "type": "module",
   "bin": {
