@@ -1,5 +1,5 @@
 {
-  "last_check": "2026-11-12",
+  "last_check": "2026-11-13",
   "packages": {
     "@modelcontextprotocol/server-postgres": "0.6.2",
     "@modelcontextprotocol/server-github": "2025.4.8",
@@ -8,7 +8,7 @@
     "@notionhq/notion-mcp-server": "2.6.1",
     "@modelcontextprotocol/server-memory": "2026.8.31",
     "@stripe/mcp": "0.3.4",
-    "@supabase/mcp-server-supabase": "0.16.1"
+    "@supabase/mcp-server-supabase": "0.17.0"
   },
   "tools": {
     "nextjs": "15.5.29",
